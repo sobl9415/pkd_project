@@ -16,44 +16,61 @@ type UserBudget = {
     nationCard: number
 } 
 
+function splash() {
+    console.log("Welcome to MONEY MAP, your money mapping friend")
+}
+
 let person = ["sofia", UserBudget] // name, income, budget
 
-const income = person[1].income;
-
-function budget_judge() {
-    if (income > 20000) {
-        if (income > 50000) {
-            // procentsats
-        }
-    // annan procentsats
-    } else {
-    // dra summa direkt till savings
-    // sedan procentsats
-    }
+function menu() {
+    // function för att skapa meny när man kan logga in, när vi skapar användare osv
 }
 
 // Function to retrive income, spendigns and saving goal
-function Userinput(): UserBudget {
+function Userinput(): UserBudget | Array<number> {
     // User prompts 
-    const income = prompt("What is your income?:");
-    const savings = prompt("What is your saving goal?:");
-    const rent = prompt("What is your rent and other fixed expences?:");
+    const income: number = Number(prompt("What is your income?: "));
+    const savings: number = Number(prompt("What is your saving goal?: "));
+    const rent: number = Number(prompt("What is your rent and other fixed expences?: "));
 
+    // antingen returnera direkt eller skapa budgeten direkt
+    return [income, savings, rent];
+}
 
-    // någonstans här får vi kalla på budget_judge(), kanske istället för UserPercentage?
-    
-    // Recomended 
-    const remains = income - (savings + rent); 
+function budget_judge() {
+    const user_data = Userinput(); // Plocka ut promtsen
+    const income = user_data[0];
+    let savings = user_data[1];
+    const rent = user_data[2];
 
-    const UserPercentage = {
+    let remains = income - (savings + rent); 
+
+    let UserPercentage = { // Standardprocent
         others: 10,
         food: 19,       
         nationCard: 2
     };
 
-    const others = (remains * UserPercentage.others) /100;
-    const food = (remains * UserPercentage.food) /100;
-    const nationCard = (remains * UserPercentage.nationCard) /100;
+    if (income > 50000) {
+        savings = savings + income * 0.20; // ta bort en del av inkomst direkt till savings
+        remains = income - (savings + rent);
+        UserPercentage = {
+            others: 10, 
+            food: 8, 
+            nationCard: 1 
+        };
+
+    } else if (income > 20000) {
+        UserPercentage = { // man kan unna sig lite mer om man tjänar mer än 20k, eventuellt dra av lite direkt till savings
+            others: 15, 
+            food: 25, 
+            nationCard: 5 
+        };
+    }
+
+    const others = (remains * UserPercentage.others) / 100;
+    const food = (remains * UserPercentage.food) / 100;
+    const nationCard = (remains * UserPercentage.nationCard) / 100;
 
     return {
         income, 
@@ -63,10 +80,9 @@ function Userinput(): UserBudget {
         others,
         food, 
         nationCard
-    }
-    
-   return;
+    };
 }
+
  
 function displayUserBudget(UserBudget: UserBudget) {
     console.log("Your income was: ", income, 'income:' )
@@ -78,12 +94,22 @@ function displayUserBudget(UserBudget: UserBudget) {
     console.log("Does this budget seem okay or do you want to modify");
     }
 
-function splash() {
-    console.log("Welcome to MONEY MAP, your money mapping friend")
+function make_chart() {
+    // funktion som mha chart.js skapar ett fint diagram
+    }
+
+function displaybudgetchart() {
+    // en funktion som dis
 }
 
+
 function main() {
+    
     splash()
-    Userinput()
+    menu()
+    input = Userinput() 
+    make_budget() // 
+    make_chart()
+    displaybudgetchart()
 }
 
