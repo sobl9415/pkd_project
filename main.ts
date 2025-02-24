@@ -85,18 +85,19 @@ function budget_judge() {
 
  
 function displayUserBudget(UserBudget: UserBudget) {
-    console.log("Your income was: ", income, 'income:' )
-    console.log("Your saving goal was: ", savings, 'savings:' )
+    const result = budget_judge;
+    console.log("Your income was: ", result[0], 'income:' )
+    console.log("Your saving goal was: ", result[1], 'savings:' )
     console.log("Your money mapping friend has now created a budget for you")
-    console.log("Your recomended budget on the category others is:", others, 'others');
-    console.log("Your recomended budget on the category food is:", food, 'food');
-    console.log("Your recomended budget on the category nation card is:", nationCard, 'nationCard');
+    console.log("Your recomended budget on the category others is:",result[4], 'others');
+    console.log("Your recomended budget on the category food is:", result[5], 'food');
+    console.log("Your recomended budget on the category nation card is:", result[6], 'nationCard');
     console.log("Does this budget seem okay or do you want to modify");
-    }
+}
 
 function make_chart() {
     // funktion som mha chart.js skapar ett fint diagram
-    }
+}
 
 function displaybudgetchart() {
     // en funktion som dis
@@ -104,7 +105,6 @@ function displaybudgetchart() {
 
 
 function main() {
-    
     splash()
     menu()
     input = Userinput() 
