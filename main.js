@@ -1,4 +1,5 @@
 "use strict";
+<<<<<<< HEAD
 // test
 Object.defineProperty(exports, "__esModule", { value: true });
 var auto_1 = require("chart.js/auto");
@@ -61,3 +62,6 @@ function main() {
     splash();
     Userinput();
 }
+=======
+// Money Map
+>>>>>>> 80faddf9b4318e34157b8099d36b3d8f79b3797d
