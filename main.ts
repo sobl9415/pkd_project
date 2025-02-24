@@ -72,7 +72,7 @@ function budget_judge() {
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
 
-    return {
+    return [
         income, 
         savings, 
         rent, 
@@ -80,16 +80,16 @@ function budget_judge() {
         others,
         food, 
         nationCard
-    };
+    ];
 }
 
  
 function displayUserBudget(UserBudget: UserBudget) {
     const result = budget_judge;
-    console.log("Your income was: ", result[0], 'income:' )
+    console.log("Your income was: ", result[0], 'income:' ) 
     console.log("Your saving goal was: ", result[1], 'savings:' )
     console.log("Your money mapping friend has now created a budget for you")
-    console.log("Your recomended budget on the category others is:",result[4], 'others');
+    console.log("Your recomended budget on the category others is:", result[4], 'others');
     console.log("Your recomended budget on the category food is:", result[5], 'food');
     console.log("Your recomended budget on the category nation card is:", result[6], 'nationCard');
     console.log("Does this budget seem okay or do you want to modify");
@@ -107,8 +107,8 @@ function displaybudgetchart() {
 function main() {
     splash()
     menu()
-    input = Userinput() 
-    make_budget() // 
+    //input = Userinput() 
+    //make_budget() // 
     make_chart()
     displaybudgetchart()
 }
