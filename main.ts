@@ -93,8 +93,30 @@ function budget_judge(): UserBudget {
 }
 
 function make_budget() {
-    // skapa en egen budget
-    // behövs denna eller kan vi utveckla budget_judge?
+    const user_data = Userinput(); // Plocka ut promtsen
+    const income = user_data[0];
+    let savings = user_data[1];
+    const rent = user_data[2];
+    let remains = income - (savings + rent); 
+
+    // här hade det kanske varit nice att ha någon funktion eller koll så man inte skriver in nåt ogiltigt/orimligt
+    console.log("Your remains after rent and savings", remains)
+    const foodBudget: number = Number(prompt("How much of your remaining income will go to food?: ")) 
+    const othersBudget: number = Number(prompt("How much of your remaining will go to other spending?: "))
+    const nationCardBudget: number = Number(prompt("How much of your remaining budget will go to nation-spendning?: "))
+
+    const food = foodBudget;
+    const others = othersBudget;
+    const nationCard = nationCardBudget;
+
+    return {
+        income, 
+        savings, 
+        rent, 
+        others,
+        food, 
+        nationCard
+    };
 }
 
 function choose_budget() {
