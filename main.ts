@@ -13,21 +13,23 @@ type UserBudget = {
     others: number,
     food: number,
     rent: number,
-    nationCard: number
+    nationCard: number,
+    remains: number
 } 
 
 function splash() {
     console.log("Welcome to MONEY MAP, your money mapping friend")
 }
 
-let person = ["sofia", UserBudget] // name, income, budget
+//let person = ["sofia", UserBudget] // name, income, budget
 
 function menu() {
     // function för att skapa meny när man kan logga in, när vi skapar användare osv
+    // här kan vi kalla på choose budget om ett alterantiv är att välja budgetfördekning själv
 }
 
 // Function to retrive income, spendigns and saving goal
-function Userinput(): UserBudget | Array<number> {
+function Userinput(): UserBudget | Array<number> {
     // User prompts 
     const income: number = Number(prompt("What is your income?: "));
     const savings: number = Number(prompt("What is your saving goal?: "));
@@ -37,7 +39,7 @@ function Userinput(): UserBudget | Array<number> {
     return [income, savings, rent];
 }
 
-function budget_judge() {
+function budget_judge(): UserBudget | Array<number> {
     const user_data = Userinput(); // Plocka ut promtsen
     const income = user_data[0];
     let savings = user_data[1];
@@ -72,7 +74,7 @@ function budget_judge() {
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
 
-    return [
+    return {
         income, 
         savings, 
         rent, 
@@ -80,13 +82,22 @@ function budget_judge() {
         others,
         food, 
         nationCard
-    ];
+    };
 }
 
- 
+function make_budget() {
+    // skapa en egen budget
+    // behövs denna eller kan vi utveckla budget_judge?
+}
+
+function choose_budget() {
+    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
+}
+
+
 function displayUserBudget(UserBudget: UserBudget) {
-    const result = budget_judge;
-    console.log("Your income was: ", result[0], 'income:' ) 
+    const result = budget_judge();
+    console.log("Your income was: ", result.income, 'income:' ) 
     console.log("Your saving goal was: ", result[1], 'savings:' )
     console.log("Your money mapping friend has now created a budget for you")
     console.log("Your recomended budget on the category others is:", result[4], 'others');
@@ -100,15 +111,15 @@ function make_chart() {
 }
 
 function displaybudgetchart() {
-    // en funktion som dis
+    // en funktion som displayar chart
 }
 
 
 function main() {
     splash()
     menu()
-    //input = Userinput() 
-    //make_budget() // 
+    let input = Userinput() 
+    make_budget()  
     make_chart()
     displaybudgetchart()
 }
