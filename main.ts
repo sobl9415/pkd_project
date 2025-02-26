@@ -39,7 +39,7 @@ function Userinput(): UserBudget | Array<number> {
     return [income, savings, rent];
 }
 
-function budget_judge(): UserBudget | Array<number> {
+function budget_judge(): UserBudget {
     const user_data = Userinput(); // Plocka ut promtsen
     const income = user_data[0];
     let savings = user_data[1];
@@ -95,14 +95,14 @@ function choose_budget() {
 }
 
 
-function displayUserBudget(UserBudget: UserBudget) {
+function displayUserBudget() {
     const result = budget_judge();
     console.log("Your income was: ", result.income, 'income:' ) 
-    console.log("Your saving goal was: ", result[1], 'savings:' )
+    console.log("Your saving goal was: ", result.savings, 'savings:' )
     console.log("Your money mapping friend has now created a budget for you")
-    console.log("Your recomended budget on the category others is:", result[4], 'others');
-    console.log("Your recomended budget on the category food is:", result[5], 'food');
-    console.log("Your recomended budget on the category nation card is:", result[6], 'nationCard');
+    console.log("Your recomended budget on the category others is:", result.others, 'others');
+    console.log("Your recomended budget on the category food is:", result.food, 'food');
+    console.log("Your recomended budget on the category nation card is:", result.nationCard, 'nationCard');
     console.log("Does this budget seem okay or do you want to modify");
 }
 
