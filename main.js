@@ -10,6 +10,7 @@ function splash() {
 //let person = ["sofia", UserBudget] // name, income, budget
 function menu() {
     // function för att skapa meny när man kan logga in, när vi skapar användare osv
+    // här kan vi kalla på choose budget om ett alterantiv är att välja budgetfördekning själv
 }
 // Function to retrive income, spendigns and saving goal
 function Userinput() {
@@ -60,27 +61,34 @@ function budget_judge() {
         nationCard: nationCard
     };
 }
-function displayUserBudget(UserBudget) {
-    var result = budget_judge;
-    console.log("Your income was: ", result[0], 'income:');
-    console.log("Your saving goal was: ", result[1], 'savings:');
+function make_budget() {
+    // skapa en egen budget
+    // behövs denna eller kan vi utveckla budget_judge?
+}
+function choose_budget() {
+    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
+}
+function displayUserBudget() {
+    var result = budget_judge();
+    console.log("Your income was: ", result.income, 'income:');
+    console.log("Your saving goal was: ", result.savings, 'savings:');
     console.log("Your money mapping friend has now created a budget for you");
-    console.log("Your recomended budget on the category others is:", result[4], 'others');
-    console.log("Your recomended budget on the category food is:", result[5], 'food');
-    console.log("Your recomended budget on the category nation card is:", result[6], 'nationCard');
+    console.log("Your recomended budget on the category others is:", result.others, 'others');
+    console.log("Your recomended budget on the category food is:", result.food, 'food');
+    console.log("Your recomended budget on the category nation card is:", result.nationCard, 'nationCard');
     console.log("Does this budget seem okay or do you want to modify");
 }
 function make_chart() {
     // funktion som mha chart.js skapar ett fint diagram
 }
 function displaybudgetchart() {
-    // en funktion som dis
+    // en funktion som displayar chart
 }
 function main() {
     splash();
     menu();
-    //input = Userinput() 
-    //make_budget() // 
+    var input = Userinput();
+    make_budget();
     make_chart();
     displaybudgetchart();
 }

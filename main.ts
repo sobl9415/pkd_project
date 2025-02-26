@@ -5,6 +5,7 @@ import {Chart, ArcElement, Tooltip, Legend} from 'chart.js/auto';
 
 Chart.register(ArcElement, Tooltip, Legend);
 // Types
+
 type CatagoryBudget = Record<string, number> //record consisting of the catagory and how much money 
 
 type UserBudget = {
@@ -46,6 +47,12 @@ function budget_judge(): UserBudget {
     const rent = user_data[2];
 
     let remains = income - (savings + rent); 
+
+    const choose_budget: string | null = prompt("Do you what to use money maps recommended budget? y/n ")
+
+    if (choose_budget === "n") {
+        make_budget() // skapa din egen budget
+    }
 
     let UserPercentage = { // Standardprocent
         others: 10,
