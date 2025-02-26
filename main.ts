@@ -15,7 +15,7 @@ type UserBudget = {
     food: number,
     rent: number,
     nationCard: number,
-    remains: number
+    //remains: number
 } 
 
 function splash() {
@@ -85,7 +85,6 @@ function budget_judge(): UserBudget {
         income, 
         savings, 
         rent, 
-        remains,
         others,
         food, 
         nationCard
