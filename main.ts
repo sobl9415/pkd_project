@@ -20,7 +20,7 @@ type BudgetCategory = {
     amount: number;
 };
 
-type UserBudget = {
+export type UserBudget = {
     income: number;
     savings: number;
     rent: number;
@@ -29,13 +29,14 @@ type UserBudget = {
 
 const StandardBudget: UserBudget = {
     income: 0,
+
     savings: 0,
     rent: 0,
     categories: [
     {name: "others", amount: 0},
     {name: "food", amount: 0},
-    {name: "nationCard", amount: 0}]
-    // remains: number
+    {name: "nationCard", amount: 0},
+    {name: "snacks", amount: 0 }]
 } 
 
 function splash() {
@@ -69,7 +70,8 @@ function budget_judge(user_data: Array<number>): UserBudget {
     let UserPercentage = { // Standardprocent
         others: 30,
         food: 50,       
-        nationCard: 20
+        nationCard: 15,
+        snacks: 5
     };
 
     if (income > 50000) {
@@ -78,20 +80,23 @@ function budget_judge(user_data: Array<number>): UserBudget {
         UserPercentage = {
             others: 25, 
             food: 50, 
-            nationCard: 25 
+            nationCard: 20, 
+            snacks: 5
         };
 
     } else if (income > 20000) {
         UserPercentage = { // man kan unna sig lite mer om man tjänar mer än 20k, eventuellt dra av lite direkt till savings
             others: 15, 
             food: 60, 
-            nationCard: 25
+            nationCard: 20,
+            snacks: 5
         };
     }
 
     const others = (remains * UserPercentage.others) / 100;
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
+    const snacks = (remains * UserPercentage.nationCard) / 100;
 
     
     const budget = {
@@ -101,7 +106,8 @@ function budget_judge(user_data: Array<number>): UserBudget {
         categories:
         [{name: "others", amount: others},
         {name: "food", amount: food}, 
-        {name: "nationCard", amount: nationCard}]
+        {name: "nationCard", amount: nationCard},
+        {name: "snacks", amount: snacks}]
     };
     console.log(budget);
     return budget;
@@ -119,11 +125,13 @@ function make_budget(user_data: Array<number>): UserBudget {
     const foodBudget: number = Number(prompt("How much of your remaining income will go to food?: ")) 
     const othersBudget: number = Number(prompt("How much of your remaining will go to other spending?: "))
     const nationCardBudget: number = Number(prompt("How much of your remaining budget will go to nation-spendning?: "))
+    const snacksBudget: number = Number(prompt("How much of your remaining budget will go to snacks?: "))
     // Ifall användaren vill lägga till egen kategori?? en while loop som sparar ner om det är fler kategorier
 
     const food = foodBudget;
     const others = othersBudget;
     const nationCard = nationCardBudget;
+    const snacks = snacksBudget
 
     // denna funkar bara för bestämda kategorier
     const budget = {
@@ -133,7 +141,8 @@ function make_budget(user_data: Array<number>): UserBudget {
         categories:
         [{name: "others", amount: others},
         {name: "food", amount: food}, 
-        {name: "nationCard", amount: nationCard}]
+        {name: "nationCard", amount: nationCard},
+        {name: "snacks", amount: snacks}]
     };
 
     return budget
@@ -151,7 +160,6 @@ function choose_budget(user_data: Array<number>) {
 
 
 function displayUserBudget(result: UserBudget) {
-    //const result = budget_judge(budget);
     // dessa fungerar bara med bestämda kategorier
     const others = result.categories[0].amount
     const food = result.categories[1].amount
@@ -187,7 +195,8 @@ function main() {
         const budget = budget_judge(user_data)
         displayUserBudget(budget)
     }
-  
+    
+    const budget = budget_judge(user_data)
     plotChart(budget)
     // make_budget()  
     // make_chart()

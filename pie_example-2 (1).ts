@@ -1,9 +1,11 @@
 import { plot, Plot, Layout } from 'nodeplotlib';
+import { UserBudget } from "./main"; // Anpassa sökvägen om det behövs
+
 
 // gör en funktion och importa
-export function plotChart(budget: Array<number>) {
+export function plotChart(budget: UserBudget) {
     const labels: string[] = [];
-    const values: number[] = []; // hämta från main procent
+    const values: number[] = []; 
 
     labels.push("Savings", "Rent");
     values.push(budget.savings, budget.rent);
@@ -13,8 +15,10 @@ export function plotChart(budget: Array<number>) {
         values.push(budget.categories[i].amount)
     }
 
-
-    const colors: string[] = ["#FF0000", "#FFD700", "#FF1493", "#6A0DAD", "#FFA500"];
+    
+    const colors: string[] = ["#FF0000", "#FFD700", "#FF1493", "#6A0DAD",
+                              "#FFA500", "#800080", "#A52A2A", "#00FF00", 
+                              "#0000FF", "#00FFFF", "#000000", "#A52A2A"];
 
     const data: Partial<Plot>[] = [
         {
@@ -28,7 +32,7 @@ export function plotChart(budget: Array<number>) {
 
     // Chart Layout
     const layout: Partial<Layout> = {
-        title: "Din mamma",
+        title: "Here is your budget displayed",
         showlegend: true,
     };
 
