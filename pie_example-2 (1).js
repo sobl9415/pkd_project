@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.plotChart = plotChart;
 var nodeplotlib_1 = require("nodeplotlib");
+var currentData = [];
 // gör en funktion och importa
 function plotChart(budget) {
     var labels = [];
@@ -15,7 +16,7 @@ function plotChart(budget) {
     var colors = ["#FF0000", "#FFD700", "#FF1493", "#6A0DAD",
         "#FFA500", "#800080", "#A52A2A", "#00FF00",
         "#0000FF", "#00FFFF", "#000000", "#A52A2A"];
-    var data = [
+    currentData = [
         {
             labels: labels,
             values: values,
@@ -30,5 +31,5 @@ function plotChart(budget) {
         showlegend: true,
     };
     // Plot the Pie Chart
-    (0, nodeplotlib_1.plot)(data, layout);
+    (0, nodeplotlib_1.plot)(currentData, layout);
 }

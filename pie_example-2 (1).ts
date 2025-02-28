@@ -1,7 +1,7 @@
 import { plot, Plot, Layout } from 'nodeplotlib';
 import { UserBudget } from "./main"; // Anpassa sökvägen om det behövs
 
-
+let currentData: Partial<Plot>[] = [];
 // gör en funktion och importa
 export function plotChart(budget: UserBudget) {
     const labels: string[] = [];
@@ -14,13 +14,12 @@ export function plotChart(budget: UserBudget) {
         labels.push(budget.categories[i].name)
         values.push(budget.categories[i].amount)
     }
-
     
     const colors: string[] = ["#FF0000", "#FFD700", "#FF1493", "#6A0DAD",
                               "#FFA500", "#800080", "#A52A2A", "#00FF00", 
                               "#0000FF", "#00FFFF", "#000000", "#A52A2A"];
 
-    const data: Partial<Plot>[] = [
+    currentData = [
         {
             labels: labels,
             values: values,
@@ -37,6 +36,5 @@ export function plotChart(budget: UserBudget) {
     };
 
     // Plot the Pie Chart
-    plot(data, layout);
-
+    plot(currentData, layout);
 }
