@@ -8,6 +8,9 @@
 
 import * as PromptSync from "prompt-sync";
 
+import { plotChart } from "./pie_example-2 (1)";
+
+
 const prompt = PromptSync(); 
 
 // type CatagoryBudget = Record<string, number> //record consisting of the catagory and how much money 
@@ -111,7 +114,7 @@ function make_budget(user_data: Array<number>): UserBudget {
     const rent = user_data[2];
     let remains = income - (savings + rent); 
 
-    // här hade det kanske varit nice att ha någon funktion eller koll så man inte skriver in nåt ogiltigt/orimligt
+    // någon funktion eller koll så man inte skriver in nåt ogiltigt/orimligt
     console.log("Your remains after rent and savings", remains)
     const foodBudget: number = Number(prompt("How much of your remaining income will go to food?: ")) 
     const othersBudget: number = Number(prompt("How much of your remaining will go to other spending?: "))
@@ -136,9 +139,9 @@ function make_budget(user_data: Array<number>): UserBudget {
     return budget
 }
 
-function choose_budget() {
+function choose_budget(user_data: Array<number>) {
     // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
-    const user_data = Userinput(); // Plocka ut promtsen
+    //const user_data = Userinput(); // Plocka ut promtsen
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -184,6 +187,8 @@ function main() {
         const budget = budget_judge(user_data)
         displayUserBudget(budget)
     }
+  
+    plotChart(budget)
     // make_budget()  
     // make_chart()
     //displayUserBudget(budget)
