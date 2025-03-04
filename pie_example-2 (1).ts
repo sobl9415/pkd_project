@@ -11,7 +11,7 @@ export function plotChart(budget: UserBudget) {
     values.push(budget.savings, budget.rent);
 
     for (let i = 0; i < budget.categories.length; i = i + 1) {
-        labels.push(budget.categories[i].name)
+        labels.push(budget.categories[i].name!)
         values.push(budget.categories[i].amount)
     }
     

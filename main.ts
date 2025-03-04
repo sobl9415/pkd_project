@@ -3,16 +3,16 @@
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
 
-
-
+import * as fs from "fs";
 import * as PromptSync from "prompt-sync";
 import { plotChart } from "./pie_example-2 (1)";
 
+const prompt = PromptSync();
+const FILE_PATH = "users.json";
 
-const prompt = PromptSync(); 
-
+// Budget-typer
 type BudgetCategory = {
-    name: string;
+    name: string | null;
     amount: number;
 };
 
@@ -23,6 +23,14 @@ export type UserBudget = {
     categories: BudgetCategory[];
 };
 
+// Användar-typer
+type User = {
+    password: string;
+};
+
+type Users = Record<string, User>;
+
+// Exempel, skriv om som type example eller vad det kallas
 const StandardBudget: UserBudget = {
     income: 0,
     savings: 0,
@@ -34,42 +42,36 @@ const StandardBudget: UserBudget = {
     {name: "snacks", amount: 0 }]
 } 
 
-function splash() {
-    console.log("Welcome to MONEY MAP, your money mapping friend")
-}
-
-function menu(x: number): string {
-    if (x === 1) {
-        console.log("\nl) Login \nc) create account \nq) quit")
-    }
-    if (x === 2) {
-        console.log("\nr) retry \nq) quit")
-    }
-    if (x === 3) {
-        console.log("\ng) generate budget \nc) create your own budget \l) log out")
-    }
-    const choice: string = String(prompt("\n Choose your option: "))
-    return choice
-}
-
-// kanske ha alla kontot-funktioner i en annan fil?
-
-type User = {
-    password: string;
-};
-
-type Users = Record<string, User>;
+/**
 
 const users: Users = {
     sofia: { password: "blomstrand" },
     tilda: { password: "larsson" },
     matilde: { password: "wiberg" }
 };
+ */
+
+
+// Funktionerna
+function splash() {
+    console.log("Welcome to MONEY MAP, your money mapping friend")
+}
+
+// kanske ha alla kontot-funktioner i en annan fil?
+
+function openData(): Users {
+    const data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
+    return JSON.parse(data) as Users; // JSON.parse(data) omvandlar JSON-strängen till ett objekt
+}
+function saveData(users: Users): void {
+    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // JSON.stringify(users) konverterar users till en JSON-sträng
+}                                                                        // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
 
 function login(): string | null {
     while (true) {
-        const username: string = String(prompt("\nUsername: "));
-        const password: string = String(prompt("\nPassword: "));
+        let users = openData()
+        const username: string = String(prompt("Username: "));
+        const password: string = String(prompt("Password: "));
 
         if (username in users && users[username].password === password) {
             console.log("Login successful!");
@@ -85,44 +87,30 @@ function login(): string | null {
     }
 }
 
-function user_actions(user_data: Array<number>) {
-    console.log("Welcome!");
-    const choice = menu(3);
-    if (choice === "g") {
-        budget_judge(user_data)
-    }
-    if (choice === "c") {
-        make_budget(user_data)
-    }
-    if (choice === "l") {
-        console.log("logging out...")
-        return 
-    }
-}
-
-
-function create_account() {
+function create_account(): Users {
+    let users = openData()
     console.log("New user: ")
     const newUsername: string = String(prompt("\nUsername: "));
     const newPassword: string = String(prompt("\nPassword: "));
+    
     users[newUsername] = { password: newPassword };
     console.log("Account created successfully!");
+    saveData(users)
+    return users; 
     //user_actions(user_data) måste hamna i user_action efter skapat konto
 }
 
 // Function to retrive income, spendings and saving goal
 function Userinput(): Array<number> {
-    // User prompts 
+
     const income: number = Number(prompt("What is your income?: "));
     const savings: number = Number(prompt("What is your saving goal?: "));
     const rent: number = Number(prompt("What is your rent?: "));
 
-    // antingen returnera direkt eller skapa budgeten direkt
     return [income, savings, rent];
 }
 
 function budget_judge(user_data: Array<number>): UserBudget {
-    // const user_data = Userinput(); // Plocka ut promtsen
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -205,7 +193,6 @@ function add_categories(budget: UserBudget, remaining_budget: number): UserBudge
 
 
 function make_budget(user_data: Array<number>): UserBudget {
-    //const user_data = Userinput(); // Plocka ut promtsen
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -228,21 +215,6 @@ function make_budget(user_data: Array<number>): UserBudget {
     return budget;
 }
 
-
-function promptChecker() {
-
-}
-
-function choose_budget(user_data: Array<number>) {
-    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
-    //const user_data = Userinput(); // Plocka ut promtsen
-    const income = user_data[0];
-    let savings = user_data[1];
-    const rent = user_data[2];
-    let remains = income - (savings + rent); 
-}
-
-
 function displayUserBudget(result: UserBudget) {
     // dessa fungerar bara med bestämda kategor;
     const food = result.categories[1].amount;
@@ -257,33 +229,65 @@ function displayUserBudget(result: UserBudget) {
     console.log("Does this budget seem okay or do you want to modify");
 }
 
-function make_chart() {
-    // funktion som mha chart.js skapar ett fint diagram
+function menu(x: number): string {
+    if (x === 1) {
+        console.log("\nl) Login \nc) Create account \nq) Quit")
+    }
+    if (x === 2) {
+        console.log("\nr) Retry \nq) Quit")
+    }
+    if (x === 3) {
+        console.log("\ng) Generate budget \nc) Create your own budget \n v) View earlier budgets \nl) Log out")
+    }
+    const choice: string = String(prompt("\nChoose your option: "))
+    return choice
 }
 
-function displaybudgetchart() {
-    // en funktion som displayar chart
+function user_actions(user_data: Array<number>) {
+    console.log("Welcome!");
+    const choice = menu(3);
+    if (choice === "g") {
+        const budget = budget_judge(user_data)
+        plotChart(budget)
+        displayUserBudget(budget)
+    }
+    if (choice === "c") {
+        const budget = make_budget(user_data)
+        plotChart(budget)
+        displayUserBudget(budget)
+    }
+    if (choice === "l") {
+        console.log("logging out...")
+        main();
+    }
 }
-
 
 function main() {
     splash()
 
     const choice = menu(1)
     if (choice === "q") {
+        console.log("quitting....")
         return;
     }
     if (choice === "l") {
         const log_in = login()
         if (log_in) {
-            let user_data = Userinput() 
+            let user_data = Userinput()
             user_actions(user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
     if (choice === "c") {
-        create_account()
+        const create = create_account();
+        if (create) { // om vi ska gå vidare eller ej, if true
+            let user_data = Userinput()
+            user_actions(user_data);
+        }
     }
-    
+
+   
+
+    /**
     let user_data = Userinput() 
     const choose_budget: string | null = prompt("Do you want to use money maps recommended budget? y/n ")
     if (choose_budget === "n") {
@@ -297,6 +301,7 @@ function main() {
         displayUserBudget(budget)
 
     }
+     */
     
     //const budget = budget_judge(user_data)
     //plotChart(budget)
@@ -306,4 +311,17 @@ function main() {
 }
 
 main();
+
+
+
+/**
+function choose_budget(user_data: Array<number>) {
+    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
+    //const user_data = Userinput(); // Plocka ut promtsen
+    const income = user_data[0];
+    let savings = user_data[1];
+    const rent = user_data[2];
+    let remains = income - (savings + rent); 
+}
+ */
 

@@ -1,1 +1,14 @@
-{}
+{
+  "sofia": {
+    "password": "blomstrand"
+  },
+  "tilda": {
+    "password": "larsson"
+  },
+  "matilde": {
+    "password": "wiberg"
+  },
+  "pelle": {
+    "password": "svans"
+  }
+}

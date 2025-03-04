@@ -3,9 +3,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
+var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
+var FILE_PATH = "users.json";
+// Exempel, skriv om som type example eller vad det kallas
 var StandardBudget = {
     income: 0,
     savings: 0,
@@ -17,31 +20,31 @@ var StandardBudget = {
         { name: "snacks", amount: 0 }
     ]
 };
-function splash() {
-    console.log("Welcome to MONEY MAP, your money mapping friend");
-}
-function menu(x) {
-    if (x === 1) {
-        console.log("\nl) Login \nc) create account \nq) quit");
-    }
-    if (x === 2) {
-        console.log("\nr) retry \nq) quit");
-    }
-    if (x === 3) {
-        console.log("\ng) generate budget \nc) create your own budget \l) log out");
-    }
-    var choice = String(prompt("\n Choose your option: "));
-    return choice;
-}
-var users = {
+/**
+
+const users: Users = {
     sofia: { password: "blomstrand" },
     tilda: { password: "larsson" },
     matilde: { password: "wiberg" }
 };
+ */
+// Funktionerna
+function splash() {
+    console.log("Welcome to MONEY MAP, your money mapping friend");
+}
+// kanske ha alla kontot-funktioner i en annan fil?
+function openData() {
+    var data = fs.readFileSync(FILE_PATH, "utf8");
+    return JSON.parse(data);
+}
+function saveData(users) {
+    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
+}
 function login() {
     while (true) {
-        var username = String(prompt("\nUsername: "));
-        var password = String(prompt("\nPassword: "));
+        var users = openData();
+        var username = String(prompt("Username: "));
+        var password = String(prompt("Password: "));
         if (username in users && users[username].password === password) {
             console.log("Login successful!");
             return username;
@@ -54,38 +57,25 @@ function login() {
         }
     }
 }
-function user_actions(user_data) {
-    console.log("Welcome!");
-    var choice = menu(3);
-    if (choice === "g") {
-        budget_judge(user_data);
-    }
-    if (choice === "c") {
-        make_budget(user_data);
-    }
-    if (choice === "l") {
-        console.log("logging out...");
-        return;
-    }
-}
 function create_account() {
+    var users = openData();
     console.log("New user: ");
     var newUsername = String(prompt("\nUsername: "));
     var newPassword = String(prompt("\nPassword: "));
     users[newUsername] = { password: newPassword };
     console.log("Account created successfully!");
+    saveData(users);
+    return users;
+    //user_actions(user_data) måste hamna i user_action efter skapat konto
 }
 // Function to retrive income, spendings and saving goal
 function Userinput() {
-    // User prompts 
     var income = Number(prompt("What is your income?: "));
     var savings = Number(prompt("What is your saving goal?: "));
     var rent = Number(prompt("What is your rent?: "));
-    // antingen returnera direkt eller skapa budgeten direkt
     return [income, savings, rent];
 }
 function budget_judge(user_data) {
-    // const user_data = Userinput(); // Plocka ut promtsen
     var income = user_data[0];
     var savings = user_data[1];
     var rent = user_data[2];
@@ -157,7 +147,6 @@ function add_categories(budget, remaining_budget) {
     return budget;
 }
 function make_budget(user_data) {
-    //const user_data = Userinput(); // Plocka ut promtsen
     var income = user_data[0];
     var savings = user_data[1];
     var rent = user_data[2];
@@ -175,16 +164,6 @@ function make_budget(user_data) {
     console.log(budget);
     return budget;
 }
-function promptChecker() {
-}
-function choose_budget(user_data) {
-    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
-    //const user_data = Userinput(); // Plocka ut promtsen
-    var income = user_data[0];
-    var savings = user_data[1];
-    var rent = user_data[2];
-    var remains = income - (savings + rent);
-}
 function displayUserBudget(result) {
     // dessa fungerar bara med bestämda kategor;
     var food = result.categories[1].amount;
@@ -198,40 +177,73 @@ function displayUserBudget(result) {
     console.log("Your recomended budget on the category nation card is:", nationCard);
     console.log("Does this budget seem okay or do you want to modify");
 }
-function make_chart() {
-    // funktion som mha chart.js skapar ett fint diagram
+function menu(x) {
+    if (x === 1) {
+        console.log("\nl) Login \nc) Create account \nq) Quit");
+    }
+    if (x === 2) {
+        console.log("\nr) Retry \nq) Quit");
+    }
+    if (x === 3) {
+        console.log("\ng) Generate budget \nc) Create your own budget \nl) Log out");
+    }
+    var choice = String(prompt("\nChoose your option: "));
+    return choice;
 }
-function displaybudgetchart() {
-    // en funktion som displayar chart
+function user_actions(user_data) {
+    console.log("Welcome!");
+    var choice = menu(3);
+    if (choice === "g") {
+        var budget = budget_judge(user_data);
+        (0, pie_example_2__1_1.plotChart)(budget);
+        displayUserBudget(budget);
+    }
+    if (choice === "c") {
+        var budget = make_budget(user_data);
+        (0, pie_example_2__1_1.plotChart)(budget);
+        displayUserBudget(budget);
+    }
+    if (choice === "l") {
+        console.log("logging out...");
+        main();
+    }
 }
 function main() {
     splash();
     var choice = menu(1);
     if (choice === "q") {
+        console.log("quitting....");
         return;
     }
     if (choice === "l") {
         var log_in = login();
         if (log_in) {
-            var user_data_1 = Userinput();
-            user_actions(user_data_1); // Om inloggningen lyckas, skicka användaren till user_actions()
+            var user_data = Userinput();
+            user_actions(user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
     if (choice === "c") {
-        create_account();
+        var create = create_account();
+        if (create) { // om vi ska gå vidare eller ej, if true
+            var user_data = Userinput();
+            user_actions(user_data);
+        }
     }
-    var user_data = Userinput();
-    var choose_budget = prompt("Do you want to use money maps recommended budget? y/n ");
+    /**
+    let user_data = Userinput()
+    const choose_budget: string | null = prompt("Do you want to use money maps recommended budget? y/n ")
     if (choose_budget === "n") {
-        var budget = make_budget(user_data); // skapa din egen budget
-        (0, pie_example_2__1_1.plotChart)(budget);
-        displayUserBudget(budget);
+        const budget = make_budget(user_data) // skapa din egen budget
+        plotChart(budget)
+        displayUserBudget(budget)
     }
     else {
-        var budget = budget_judge(user_data);
-        (0, pie_example_2__1_1.plotChart)(budget);
-        displayUserBudget(budget);
+        const budget = budget_judge(user_data)
+        plotChart(budget)
+        displayUserBudget(budget)
+
     }
+     */
     //const budget = budget_judge(user_data)
     //plotChart(budget)
     // make_budget()  
@@ -239,3 +251,13 @@ function main() {
     //displayUserBudget(budget)
 }
 main();
+/**
+function choose_budget(user_data: Array<number>) {
+    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
+    //const user_data = Userinput(); // Plocka ut promtsen
+    const income = user_data[0];
+    let savings = user_data[1];
+    const rent = user_data[2];
+    let remains = income - (savings + rent);
+}
+ */
