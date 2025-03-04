@@ -25,7 +25,7 @@ function menu(x) {
         console.log("\nl) Login \nc) create account \nq) quit");
     }
     if (x === 2) {
-        console.log("");
+        console.log("\nr) retry \nq) quit");
     }
     if (x === 3) {
         console.log("\ng) generate budget \nc) create your own budget \l) log out");
@@ -33,13 +33,47 @@ function menu(x) {
     var choice = String(prompt("\n Choose your option: "));
     return choice;
 }
+var users = {
+    sofia: { password: "blomstrand" },
+    tilda: { password: "larsson" },
+    matilde: { password: "wiberg" }
+};
 function login() {
-    var username = String(prompt("\nUsername: "));
+    while (true) {
+        var username = String(prompt("\nUsername: "));
+        var password = String(prompt("\nPassword: "));
+        if (username in users && users[username].password === password) {
+            console.log("Login successful!");
+            return username;
+        }
+        console.log("Incorrect username or password");
+        var retry = menu(2);
+        if (retry === "q") {
+            console.log("Quitting...");
+            return null;
+        }
+    }
+}
+function user_actions(user_data) {
+    console.log("Welcome!");
+    var choice = menu(3);
+    if (choice === "g") {
+        budget_judge(user_data);
+    }
+    if (choice === "c") {
+        make_budget(user_data);
+    }
+    if (choice === "l") {
+        console.log("logging out...");
+        return;
+    }
 }
 function create_account() {
-}
-function user_actions() {
-    // efter att man loggat in, menu 3
+    console.log("New user: ");
+    var newUsername = String(prompt("\nUsername: "));
+    var newPassword = String(prompt("\nPassword: "));
+    users[newUsername] = { password: newPassword };
+    console.log("Account created successfully!");
 }
 // Function to retrive income, spendings and saving goal
 function Userinput() {
@@ -129,11 +163,11 @@ function make_budget(user_data) {
     var rent = user_data[2];
     var remaining_budget = income - (savings + rent);
     var budget = { income: income, savings: savings, rent: rent, categories: [] };
-    var categori = ["food", "nation-spendings", "snacks", "others"];
+    var category = ["food", "nation-spendings", "snacks", "others"];
     var n = 0;
-    while (n < categori.length) {
-        var amount = add_to_budget(remaining_budget, categori[n]);
-        budget.categories.push({ name: categori[n], amount: amount });
+    while (n < category.length) {
+        var amount = add_to_budget(remaining_budget, category[n]);
+        budget.categories.push({ name: category[n], amount: amount });
         remaining_budget -= amount;
         n += 1;
     }
@@ -150,7 +184,6 @@ function choose_budget(user_data) {
     var savings = user_data[1];
     var rent = user_data[2];
     var remains = income - (savings + rent);
-    // här hade det kanske varit nice att ha någon funktion eller koll så man inte skriver in nåt ogiltigt/orimligt
 }
 function displayUserBudget(result) {
     // dessa fungerar bara med bestämda kategor;
@@ -173,18 +206,20 @@ function displaybudgetchart() {
 }
 function main() {
     splash();
-    /**
-    const choice = menu(1)
+    var choice = menu(1);
     if (choice === "q") {
         return;
     }
     if (choice === "l") {
-        // login()
+        var log_in = login();
+        if (log_in) {
+            var user_data_1 = Userinput();
+            user_actions(user_data_1); // Om inloggningen lyckas, skicka användaren till user_actions()
+        }
     }
     if (choice === "c") {
-        // create_account()
+        create_account();
     }
-    */
     var user_data = Userinput();
     var choose_budget = prompt("Do you want to use money maps recommended budget? y/n ");
     if (choose_budget === "n") {

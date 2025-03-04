@@ -3,13 +3,13 @@
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
 
+
+
 import * as PromptSync from "prompt-sync";
 import { plotChart } from "./pie_example-2 (1)";
 
 
 const prompt = PromptSync(); 
-
-// type CatagoryBudget = Record<string, number> //record consisting of the catagory and how much money 
 
 type BudgetCategory = {
     name: string;
@@ -43,7 +43,7 @@ function menu(x: number): string {
         console.log("\nl) Login \nc) create account \nq) quit")
     }
     if (x === 2) {
-        console.log("")
+        console.log("\nr) retry \nq) quit")
     }
     if (x === 3) {
         console.log("\ng) generate budget \nc) create your own budget \l) log out")
@@ -52,16 +52,62 @@ function menu(x: number): string {
     return choice
 }
 
-function login() {
-    const username: string = String(prompt("\nUsername: "))
+// kanske ha alla kontot-funktioner i en annan fil?
+
+type User = {
+    password: string;
+};
+
+type Users = Record<string, User>;
+
+const users: Users = {
+    sofia: { password: "blomstrand" },
+    tilda: { password: "larsson" },
+    matilde: { password: "wiberg" }
+};
+
+function login(): string | null {
+    while (true) {
+        const username: string = String(prompt("\nUsername: "));
+        const password: string = String(prompt("\nPassword: "));
+
+        if (username in users && users[username].password === password) {
+            console.log("Login successful!");
+            return username;
+        } 
+        
+        console.log("Incorrect username or password");
+        const retry = menu(2);
+        if (retry === "q") {
+            console.log("Quitting...");
+            return null; 
+        }
+    }
 }
+
+function user_actions(user_data: Array<number>) {
+    console.log("Welcome!");
+    const choice = menu(3);
+    if (choice === "g") {
+        budget_judge(user_data)
+    }
+    if (choice === "c") {
+        make_budget(user_data)
+    }
+    if (choice === "l") {
+        console.log("logging out...")
+        return 
+    }
+}
+
 
 function create_account() {
-
-}
-
-function user_actions() {
-    // efter att man loggat in, menu 3
+    console.log("New user: ")
+    const newUsername: string = String(prompt("\nUsername: "));
+    const newPassword: string = String(prompt("\nPassword: "));
+    users[newUsername] = { password: newPassword };
+    console.log("Account created successfully!");
+    //user_actions(user_data) måste hamna i user_action efter skapat konto
 }
 
 // Function to retrive income, spendings and saving goal
@@ -130,6 +176,7 @@ function budget_judge(user_data: Array<number>): UserBudget {
     return budget;
 }
 
+
 function add_to_budget(remaining_budget: number, category: string): number {
     console.log("Your remaining budget amount: ", remaining_budget)
     let amount: number = Number(prompt("Amount to " + category + ": "))
@@ -166,11 +213,11 @@ function make_budget(user_data: Array<number>): UserBudget {
     
     let budget: UserBudget = {income: income, savings: savings, rent: rent, categories: []}
 
-    const categori = ["food", "nation-spendings", "snacks", "others"]
+    const category = ["food", "nation-spendings", "snacks", "others"]
     let n = 0;
-    while (n < categori.length) {
-        const amount = add_to_budget(remaining_budget, categori[n])
-        budget.categories.push({name: categori[n], amount: amount})
+    while (n < category.length) {
+        const amount = add_to_budget(remaining_budget, category[n])
+        budget.categories.push({name: category[n], amount: amount})
         remaining_budget -= amount
         n +=1;
     }
@@ -193,7 +240,6 @@ function choose_budget(user_data: Array<number>) {
     let savings = user_data[1];
     const rent = user_data[2];
     let remains = income - (savings + rent); 
-    // här hade det kanske varit nice att ha någon funktion eller koll så man inte skriver in nåt ogiltigt/orimligt
 }
 
 
@@ -222,18 +268,21 @@ function displaybudgetchart() {
 
 function main() {
     splash()
-    
+
     const choice = menu(1)
     if (choice === "q") {
         return;
     }
     if (choice === "l") {
-        // login()
+        const log_in = login()
+        if (log_in) {
+            let user_data = Userinput() 
+            user_actions(user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
+        }
     }
     if (choice === "c") {
-        // create_account()
+        create_account()
     }
-    
     
     let user_data = Userinput() 
     const choose_budget: string | null = prompt("Do you want to use money maps recommended budget? y/n ")
