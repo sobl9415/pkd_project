@@ -26,6 +26,7 @@ export type UserBudget = {
 // Användar-typer
 type User = {
     password: string;
+    budget: UserBudget
 };
 
 type Users = Record<string, User>;
@@ -67,7 +68,7 @@ function saveData(users: Users): void {
     fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // JSON.stringify(users) konverterar users till en JSON-sträng
 }                                                                        // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
 
-function login(): string | null {
+function login(): string {
     while (true) {
         let users = openData()
         const username: string = String(prompt("Username: "));
@@ -81,8 +82,7 @@ function login(): string | null {
         console.log("Incorrect username or password");
         const retry = menu(2);
         if (retry === "q") {
-            console.log("Quitting...");
-            return null; 
+            console.log("Quitting..."); 
         }
     }
 }
@@ -90,22 +90,30 @@ function login(): string | null {
 function create_account(): Users {
     let users = openData()
     console.log("New user: ")
-    const newUsername: string = String(prompt("\nUsername: "));
-    const newPassword: string = String(prompt("\nPassword: "));
-    
-    users[newUsername] = { password: newPassword };
-    console.log("Account created successfully!");
-    saveData(users)
-    return users; 
-    //user_actions(user_data) måste hamna i user_action efter skapat konto
+
+    while (true) {
+        const newUsername: string = String(prompt("Username: "));
+
+        if (newUsername in users) {
+            console.log("Username is already taken")
+
+        } else {
+            const newPassword: string = String(prompt("Password: "));
+            const startBudget: number = 0;
+            users[newUsername] = { password: newPassword, budget: StandardBudget };
+            console.log("Account created successfully!");
+            saveData(users)
+            return users; 
+        }
+    }
 }
 
 // Function to retrive income, spendings and saving goal
 function Userinput(): Array<number> {
 
     const income: number = Number(prompt("What is your income?: "));
-    const savings: number = Number(prompt("What is your saving goal?: "));
-    const rent: number = Number(prompt("What is your rent?: "));
+    const savings: number = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
+    const rent: number = Number(prompt("What is your rent?: ")); // samma här
 
     return [income, savings, rent];
 }
@@ -226,7 +234,7 @@ function displayUserBudget(result: UserBudget) {
     console.log("Your recomended budget on the category others is:", others);
     console.log("Your recomended budget on the category food is:", food);
     console.log("Your recomended budget on the category nation card is:", nationCard);
-    console.log("Does this budget seem okay or do you want to modify");
+    //console.log("Does this budget seem okay or do you want to modify");
 }
 
 function menu(x: number): string {
@@ -237,28 +245,60 @@ function menu(x: number): string {
         console.log("\nr) Retry \nq) Quit")
     }
     if (x === 3) {
-        console.log("\ng) Generate budget \nc) Create your own budget \n v) View earlier budgets \nl) Log out")
+        console.log("\ng) Generate budget \nc) Create your own budget \nv) View earlier budgets \nl) Log out")
     }
     const choice: string = String(prompt("\nChoose your option: "))
     return choice
 }
 
-function user_actions(user_data: Array<number>) {
+function view_budget(username: string, user_data: Array<number>) {
+    let users = openData();
+
+    if (username in users && users[username].budget) {
+        const userBudget: UserBudget = users[username].budget;
+        console.log("Your budget:", userBudget);
+    } else {
+        console.log("User not found or no budget has been created");
+    }
+    user_actions(username, user_data)
+}
+
+
+function user_actions(username: string, user_data: Array<number>) {
     console.log("Welcome!");
     const choice = menu(3);
     if (choice === "g") {
         const budget = budget_judge(user_data)
         plotChart(budget)
         displayUserBudget(budget)
+        //saveData(users)
     }
+
     if (choice === "c") {
+        let users = openData();
         const budget = make_budget(user_data)
-        plotChart(budget)
         displayUserBudget(budget)
+        const is_budget: string = String(prompt("This is your budget. Doo you want to modify? (y/n): "));
+
+        if (is_budget === "n") {
+            users[username].budget = budget;
+            saveData(users)
+            plotChart(budget)
+            displayUserBudget(budget)
+        } else {
+            const modified_budget = make_budget(user_data);
+            users[username].budget = modified_budget;
+            saveData(users);
+            plotChart(modified_budget)
+        }
+
     }
     if (choice === "l") {
         console.log("logging out...")
         main();
+    }
+    if (choice === "v") {
+        view_budget(username, user_data)
     }
 }
 
@@ -271,17 +311,18 @@ function main() {
         return;
     }
     if (choice === "l") {
-        const log_in = login()
-        if (log_in) {
+        const username = login()
+        if (username) {
             let user_data = Userinput()
-            user_actions(user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
+            user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
+
     if (choice === "c") {
         const create = create_account();
         if (create) { // om vi ska gå vidare eller ej, if true
             let user_data = Userinput()
-            user_actions(user_data);
+            user_actions("", user_data);
         }
     }
 

@@ -1,6 +1,29 @@
 {
-  "sofia": {
-    "password": "blomstrand"
+  "alex": {
+    "password": "password123",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
   },
   "tilda": {
     "password": "larsson"
@@ -10,5 +33,60 @@
   },
   "pelle": {
     "password": "svans"
+  },
+  "hello": {
+    "password": "bye"
+  },
+  "kalle": {
+    "password": "kolakaka",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
+  },
+  "chrippa": {
+    "password": "choklad",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
   }
 }

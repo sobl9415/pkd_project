@@ -34,12 +34,12 @@ function splash() {
 }
 // kanske ha alla kontot-funktioner i en annan fil?
 function openData() {
-    var data = fs.readFileSync(FILE_PATH, "utf8");
-    return JSON.parse(data);
+    var data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
+    return JSON.parse(data); // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 function saveData(users) {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
-}
+    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // JSON.stringify(users) konverterar users till en JSON-sträng
+} // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
 function login() {
     while (true) {
         var users = openData();
@@ -53,26 +53,32 @@ function login() {
         var retry = menu(2);
         if (retry === "q") {
             console.log("Quitting...");
-            return null;
         }
     }
 }
 function create_account() {
     var users = openData();
     console.log("New user: ");
-    var newUsername = String(prompt("\nUsername: "));
-    var newPassword = String(prompt("\nPassword: "));
-    users[newUsername] = { password: newPassword };
-    console.log("Account created successfully!");
-    saveData(users);
-    return users;
-    //user_actions(user_data) måste hamna i user_action efter skapat konto
+    while (true) {
+        var newUsername = String(prompt("Username: "));
+        if (newUsername in users) {
+            console.log("Username is already taken");
+        }
+        else {
+            var newPassword = String(prompt("Password: "));
+            var startBudget = 0;
+            users[newUsername] = { password: newPassword, budget: StandardBudget };
+            console.log("Account created successfully!");
+            saveData(users);
+            return users;
+        }
+    }
 }
 // Function to retrive income, spendings and saving goal
 function Userinput() {
     var income = Number(prompt("What is your income?: "));
-    var savings = Number(prompt("What is your saving goal?: "));
-    var rent = Number(prompt("What is your rent?: "));
+    var savings = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
+    var rent = Number(prompt("What is your rent?: ")); // samma här
     return [income, savings, rent];
 }
 function budget_judge(user_data) {
@@ -175,7 +181,7 @@ function displayUserBudget(result) {
     console.log("Your recomended budget on the category others is:", others);
     console.log("Your recomended budget on the category food is:", food);
     console.log("Your recomended budget on the category nation card is:", nationCard);
-    console.log("Does this budget seem okay or do you want to modify");
+    //console.log("Does this budget seem okay or do you want to modify");
 }
 function menu(x) {
     if (x === 1) {
@@ -185,27 +191,51 @@ function menu(x) {
         console.log("\nr) Retry \nq) Quit");
     }
     if (x === 3) {
-        console.log("\ng) Generate budget \nc) Create your own budget \nl) Log out");
+        console.log("\ng) Generate budget \nc) Create your own budget \nv) View earlier budgets \nl) Log out");
     }
     var choice = String(prompt("\nChoose your option: "));
     return choice;
 }
-function user_actions(user_data) {
+function view_budget(username, user_data) {
+    var users = openData();
+    if (username in users && users[username].budget) {
+        var userBudget = users[username].budget;
+        console.log("Your budget:", userBudget);
+    }
+    else {
+        console.log("User not found or no budget has been created");
+    }
+    user_actions(username, user_data);
+}
+function user_actions(username, user_data) {
     console.log("Welcome!");
     var choice = menu(3);
     if (choice === "g") {
         var budget = budget_judge(user_data);
         (0, pie_example_2__1_1.plotChart)(budget);
         displayUserBudget(budget);
+        //saveData(users)
     }
     if (choice === "c") {
+        var users = openData();
         var budget = make_budget(user_data);
-        (0, pie_example_2__1_1.plotChart)(budget);
         displayUserBudget(budget);
+        var is_budget = String(prompt("This is your budget. Doo you want to modify? (y/n): "));
+        if (is_budget === "n") {
+            saveData(users);
+            (0, pie_example_2__1_1.plotChart)(budget);
+            displayUserBudget(budget);
+        }
+        else {
+            make_budget(user_data);
+        }
     }
     if (choice === "l") {
         console.log("logging out...");
         main();
+    }
+    if (choice === "v") {
+        view_budget(username, user_data);
     }
 }
 function main() {
@@ -216,17 +246,17 @@ function main() {
         return;
     }
     if (choice === "l") {
-        var log_in = login();
-        if (log_in) {
+        var username = login();
+        if (username) {
             var user_data = Userinput();
-            user_actions(user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
+            user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
     if (choice === "c") {
         var create = create_account();
         if (create) { // om vi ska gå vidare eller ej, if true
             var user_data = Userinput();
-            user_actions(user_data);
+            user_actions("", user_data);
         }
     }
     /**
