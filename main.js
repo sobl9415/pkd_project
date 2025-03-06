@@ -5,10 +5,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Types
 // kvar att göra
 // 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
+// - gjort en lösning till detta, ni får testa och se vad ni tycker
 // 2) Fixa så att budgeten kan sparas ner i jsonfilen, när man lägger till ytterligare kategorier. 
 //    I add_categories måste dem sparas ner till rätt användare in i json. 
 // 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
 //    när användaren skapas. 
+// - fixat tror jag, lade till att om inkomsten är 0 så finns ingen budget
 var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
@@ -104,7 +106,7 @@ function budget_judge(user_data) {
     var remains = income - (savings + rent);
     var UserPercentage = {
         others: 30,
-        food: 50,
+        food: 40,
         nationCard: 15,
         snacks: 5
     };
@@ -132,7 +134,9 @@ function budget_judge(user_data) {
     var nationCard = (remains * UserPercentage.nationCard) / 100;
     var snacks = (remains * UserPercentage.nationCard) / 100;
     remains = remains - others - food - nationCard - snacks; // lade till för att kunna lägga pengar i savings om man är rik
-    savings += remains;
+    if (remains > 0) {
+        savings += remains;
+    }
     var budget = {
         income: income,
         savings: savings,
@@ -174,17 +178,17 @@ function add_categories(budget, remaining_budget) {
     budget.savings += remaining_budget;
     return budget;
 }
-function make_budget(user_data) {
+function make_budget(user_data, categories) {
     var income = user_data[0];
     var savings = user_data[1];
     var rent = user_data[2];
     var remaining_budget = income - (savings + rent);
     var budget = { income: income, savings: savings, rent: rent, categories: [] };
-    var category = ["food", "nation-spendings", "snacks", "others"];
+    //const category = 
     var n = 0;
-    while (n < category.length) {
-        var amount = add_to_budget(remaining_budget, category[n]);
-        budget.categories.push({ name: category[n], amount: amount });
+    while (n < categories.length) {
+        var amount = add_to_budget(remaining_budget, categories[n]);
+        budget.categories.push({ name: categories[n], amount: amount });
         remaining_budget -= amount;
         n += 1;
     }
@@ -220,7 +224,7 @@ function menu(x) {
 }
 function view_budget(username) {
     var users = openData();
-    if (username in users && users[username].budget.income != 0) { // and userbudget någon siffra = 0
+    if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
         var userBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     }
@@ -238,7 +242,8 @@ function user_actions(username) {
         var budget = budget_judge(user_data);
         var is_budget = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "y") {
-            budget = make_budget(user_data);
+            var categories = users[username].budget.categories.map(function (category) { return category.name; });
+            budget = make_budget(user_data, categories);
         }
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);
@@ -248,11 +253,16 @@ function user_actions(username) {
     if (choice === "c") {
         var users = openData();
         var user_data = Userinput();
-        var budget = make_budget(user_data);
+        var categories = users[username].budget.categories.map(function (category) { return category.name; });
+        var budget = make_budget(user_data, categories);
         //displayUserBudget(budget)
+        console.log(budget);
         var is_budget = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "y") {
-            budget = make_budget(user_data); //displayUserBudget(budget)
+            users[username].budget = budget;
+            categories = users[username].budget.categories.map(function (category) { return category.name; });
+            console.log(categories);
+            budget = make_budget(user_data, categories); //displayUserBudget(budget)
         }
         users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
         saveData(users);

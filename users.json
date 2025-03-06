@@ -28,25 +28,37 @@
   "tilda": {
     "password": "larsson",
     "budget": {
-      "income": 130000,
-      "savings": 32850,
-      "rent": 5000,
+      "income": 30,
+      "savings": 9,
+      "rent": 3,
       "categories": [
         {
           "name": "others",
-          "amount": 24250
+          "amount": 3
         },
         {
           "name": "food",
-          "amount": 29100
+          "amount": 3
         },
         {
           "name": "nationCard",
-          "amount": 19400
+          "amount": 3
         },
         {
           "name": "snacks",
-          "amount": 19400
+          "amount": 3
+        },
+        {
+          "name": "fika",
+          "amount": 3
+        },
+        {
+          "name": "te",
+          "amount": 3
+        },
+        {
+          "name": "kaffe",
+          "amount": 0
         }
       ]
     }

@@ -6,10 +6,12 @@
 
 // kvar att göra
 // 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
+// - gjort en lösning till detta, ni får testa och se vad ni tycker
 // 2) Fixa så att budgeten kan sparas ner i jsonfilen, när man lägger till ytterligare kategorier. 
 //    I add_categories måste dem sparas ner till rätt användare in i json. 
 // 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
 //    när användaren skapas. 
+// - fixat tror jag, lade till att om inkomsten är 0 så finns ingen budget
 
 import * as fs from "fs";
 import * as PromptSync from "prompt-sync";
@@ -20,7 +22,7 @@ const FILE_PATH = "users.json";
 
 // Budget-typer
 type BudgetCategory = {
-    name: string | null;
+    name: string;
     amount: number;
 };
 
@@ -147,7 +149,7 @@ function budget_judge(user_data: Array<number>): UserBudget {
 
     let UserPercentage = { // Standardprocent
         others: 30,
-        food: 50,       
+        food: 40,       
         nationCard: 15,
         snacks: 5
     };
@@ -177,7 +179,9 @@ function budget_judge(user_data: Array<number>): UserBudget {
     const nationCard = (remains * UserPercentage.nationCard) / 100;
     const snacks = (remains * UserPercentage.nationCard) / 100;
     remains = remains - others - food - nationCard - snacks // lade till för att kunna lägga pengar i savings om man är rik
-    savings += remains
+    if (remains > 0) {
+        savings += remains
+    }
     
     const budget = {
         income: income, 
@@ -225,7 +229,7 @@ function add_categories(budget: UserBudget, remaining_budget: number): UserBudge
 }
 
 
-function make_budget(user_data: Array<number>): UserBudget {
+function make_budget(user_data: Array<number>, categories: Array<string>): UserBudget {
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -233,11 +237,11 @@ function make_budget(user_data: Array<number>): UserBudget {
     
     let budget: UserBudget = {income: income, savings: savings, rent: rent, categories: []}
 
-    const category = ["food", "nation-spendings", "snacks", "others"]
+    //const category = 
     let n = 0;
-    while (n < category.length) {
-        const amount = add_to_budget(remaining_budget, category[n])
-        budget.categories.push({name: category[n], amount: amount})
+    while (n < categories.length) {
+        const amount = add_to_budget(remaining_budget, categories[n])
+        budget.categories.push({name: categories[n], amount: amount})
         remaining_budget -= amount
         n +=1;
     }
@@ -296,7 +300,8 @@ function user_actions(username: string): void {
         let budget = budget_judge(user_data)
         const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "y") {
-            budget = make_budget(user_data);
+            let categories = users[username].budget.categories.map(category => category.name);
+            budget = make_budget(user_data, categories);
         }
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);    
@@ -307,11 +312,16 @@ function user_actions(username: string): void {
     if (choice === "c") {
         let users = openData();
         const user_data = Userinput()
-        let budget = make_budget(user_data)
+        let categories = users[username].budget.categories.map(category => category.name);
+        let budget = make_budget(user_data, categories)
         //displayUserBudget(budget)
+        console.log(budget)
         const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "y") {
-            budget = make_budget(user_data); //displayUserBudget(budget)
+            users[username].budget = budget;
+            categories = users[username].budget.categories.map(category => category.name);
+            console.log(categories)
+            budget = make_budget(user_data, categories); //displayUserBudget(budget)
         }
         users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
         saveData(users)
