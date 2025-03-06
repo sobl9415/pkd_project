@@ -28,25 +28,29 @@
   "tilda": {
     "password": "larsson",
     "budget": {
-      "income": 30000,
-      "savings": 1000,
-      "rent": 40,
+      "income": 10000,
+      "savings": 2200,
+      "rent": 3000,
       "categories": [
         {
-          "name": "others",
-          "amount": 4344
-        },
-        {
           "name": "food",
-          "amount": 17376
+          "amount": 3000
         },
         {
-          "name": "nationCard",
-          "amount": 5792
+          "name": "nation-spendings",
+          "amount": 1000
         },
         {
           "name": "snacks",
-          "amount": 5792
+          "amount": 100
+        },
+        {
+          "name": "others",
+          "amount": 300
+        },
+        {
+          "name": "Fika",
+          "amount": 400
         }
       ]
     }
@@ -99,6 +103,84 @@
         {
           "name": "others",
           "amount": 5000
+        }
+      ]
+    }
+  },
+  "pelle": {
+    "password": "svanslös",
+    "budget": {
+      "income": 100,
+      "savings": 20,
+      "rent": 10,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 21
+        },
+        {
+          "name": "food",
+          "amount": 35
+        },
+        {
+          "name": "nationCard",
+          "amount": 10.5
+        },
+        {
+          "name": "snacks",
+          "amount": 10.5
+        }
+      ]
+    }
+  },
+  "pella": {
+    "password": "medsvans",
+    "budget": {
+      "income": 1000,
+      "savings": 100,
+      "rent": 50,
+      "categories": [
+        {
+          "name": "food",
+          "amount": 200
+        },
+        {
+          "name": "nation-spendings",
+          "amount": 100
+        },
+        {
+          "name": "snacks",
+          "amount": 500
+        },
+        {
+          "name": "others",
+          "amount": 50
+        }
+      ]
+    }
+  },
+  "pellis": {
+    "password": "svans",
+    "budget": {
+      "income": 1000,
+      "savings": 300,
+      "rent": 500,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 60
+        },
+        {
+          "name": "food",
+          "amount": 100
+        },
+        {
+          "name": "nationCard",
+          "amount": 30
+        },
+        {
+          "name": "snacks",
+          "amount": 30
         }
       ]
     }

@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
 // 2) Fixa så att budgeten kan sparas ner i jsonfilen, när man lägger till ytterligare kategorier. 
 //    I add_categories måste dem sparas ner till rätt användare in i json. 
+// 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
+//    när användaren skapas. 
 var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
@@ -67,7 +69,7 @@ function login() {
     }
 }
 function create_account() {
-    var users = openData();
+    var users = openData(); // det gör däremot användarnamnet tror jag
     console.log("New user: ");
     while (true) {
         var newUsername = String(prompt("Username: "));
@@ -80,7 +82,7 @@ function create_account() {
             users[newUsername] = { password: newPassword, budget: StandardBudget };
             console.log("Account created successfully!");
             saveData(users);
-            return users;
+            return newUsername;
         }
     }
 }
@@ -209,7 +211,7 @@ function menu(x) {
     var choice = String(prompt("\nChoose your option: ")).trim().toLowerCase();
     return choice;
 }
-function view_budget(username, user_data) {
+function view_budget(username) {
     var users = openData();
     if (username in users && users[username].budget) { // and userbudget någon siffra = 0
         var userBudget = users[username].budget;
@@ -218,14 +220,16 @@ function view_budget(username, user_data) {
     else {
         console.log("User not found or no budget has been created");
     }
-    user_actions(username, user_data);
+    user_actions(username);
 }
-function user_actions(username, user_data) {
-    console.log("Welcome!");
+function user_actions(username) {
+    console.log("\nWelcome!");
     var choice = menu(3);
     if (choice === "g") {
+        var user_data = Userinput();
         var users = openData();
         var budget = budget_judge(user_data);
+        console.log(username);
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);
         (0, pie_example_2__1_1.plotChart)(budget);
@@ -233,9 +237,10 @@ function user_actions(username, user_data) {
     }
     if (choice === "c") {
         var users = openData();
+        var user_data = Userinput();
         var budget = make_budget(user_data);
         displayUserBudget(budget);
-        var is_budget = String(prompt("This is your budget. Doo you want to modify? (y/n): ")).trim().toLowerCase();
+        var is_budget = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "n") {
             users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
             saveData(users);
@@ -254,7 +259,7 @@ function user_actions(username, user_data) {
         main();
     }
     if (choice === "v") {
-        view_budget(username, user_data);
+        view_budget(username);
     }
 }
 function main() {
@@ -268,15 +273,17 @@ function main() {
         var username = login();
         if (username) {
             var users = openData();
-            var user_data = Userinput();
-            user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
+            // här kan man kolla om personen redan har income osv? fast vad händer om personens inkomst ändras?
+            //if (users.username.budget) {}
+            //let user_data = Userinput()
+            user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
     if (choice === "c") {
-        var create = create_account();
-        if (create) { // om vi ska gå vidare eller ej, if true
-            var user_data = Userinput();
-            user_actions("", user_data);
+        var username = create_account();
+        if (username) { // om vi ska gå vidare eller ej, if true
+            //let user_data = Userinput()
+            user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
         }
     }
     /**

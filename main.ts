@@ -35,6 +35,7 @@ export type UserBudget = {
 type User = {
     password: string;
     // ska vi också spara income + rent + saving separat?
+
     budget: UserBudget;
 };
 
@@ -102,8 +103,8 @@ function login(): string {
     }
 }
 
-function create_account(): Users {
-    let users = openData()
+function create_account(): string { // ändrade till att funktionen returnerar nya användarnamnet istället för Users för jag tror inte den behövs
+    let users = openData()          // det gör däremot användarnamnet tror jag
     console.log("New user: ")
 
     while (true) {
@@ -118,7 +119,7 @@ function create_account(): Users {
             users[newUsername] = { password: newPassword, budget: StandardBudget };
             console.log("Account created successfully!");
             saveData(users)
-            return users; 
+            return newUsername; 
         }
     }
 }
@@ -270,7 +271,7 @@ function menu(x: number): string {
     return choice
 }
 
-function view_budget(username: string, user_data: Array<number>) {
+function view_budget(username: string): void {
     let users = openData();
 
     if (username in users && users[username].budget) { // and userbudget någon siffra = 0
@@ -279,33 +280,35 @@ function view_budget(username: string, user_data: Array<number>) {
     } else {
         console.log("User not found or no budget has been created");
     }
-    user_actions(username, user_data)
+    user_actions(username)
 }
 
 
-function user_actions(username: string, user_data: Array<number>) {
-    console.log("Welcome!");
+function user_actions(username: string): void {
+    console.log("\nWelcome!");
     const choice = menu(3);
     if (choice === "g") {
+        const user_data = Userinput()
         let users = openData()
         const budget = budget_judge(user_data)
+        console.log(username)
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);    
         plotChart(budget)
-        displayUserBudget(budget)
+        //displayUserBudget(budget)
     }
 
     if (choice === "c") {
         let users = openData();
+        const user_data = Userinput()
         const budget = make_budget(user_data)
-        displayUserBudget(budget)
-        const is_budget: string = String(prompt("This is your budget. Doo you want to modify? (y/n): ")).trim().toLowerCase();
-
+        //displayUserBudget(budget)
+        const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "n") {
             users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
             saveData(users)
             plotChart(budget)
-            displayUserBudget(budget)
+            //displayUserBudget(budget)
         } else {
             const modified_budget = make_budget(user_data);
             users[username].budget = modified_budget;
@@ -319,7 +322,7 @@ function user_actions(username: string, user_data: Array<number>) {
         main();
     }
     if (choice === "v") {
-        view_budget(username, user_data)
+        view_budget(username)
     }
 }
 
@@ -335,16 +338,16 @@ function main() {
         const username = login()
         if (username) {
             let users = openData()
-            let user_data = Userinput()
-            user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
+            //let user_data = Userinput()
+            user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
     }
 
     if (choice === "c") {
-        const create = create_account();
-        if (create) { // om vi ska gå vidare eller ej, if true
-            let user_data = Userinput()
-            user_actions("", user_data);
+        const username = create_account();
+        if (username) { // om vi ska gå vidare eller ej, if true
+            //let user_data = Userinput()
+            user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
         }
     }
 
