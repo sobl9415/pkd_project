@@ -1,90 +1,104 @@
 {
-  "alex": {
-    "password": "password123",
+  "sofia": {
+    "password": "blomstrand",
     "budget": {
-      "income": 0,
-      "savings": 0,
-      "rent": 0,
+      "income": 30000,
+      "savings": 100,
+      "rent": 1000,
       "categories": [
         {
           "name": "others",
-          "amount": 0
+          "amount": 4335
         },
         {
           "name": "food",
-          "amount": 0
+          "amount": 17340
         },
         {
           "name": "nationCard",
-          "amount": 0
+          "amount": 5780
         },
         {
           "name": "snacks",
-          "amount": 0
+          "amount": 5780
         }
       ]
     }
   },
   "tilda": {
-    "password": "larsson"
-  },
-  "matilde": {
-    "password": "wiberg"
-  },
-  "pelle": {
-    "password": "svans"
-  },
-  "hello": {
-    "password": "bye"
-  },
-  "kalle": {
-    "password": "kolakaka",
+    "password": "larsson",
     "budget": {
-      "income": 0,
-      "savings": 0,
-      "rent": 0,
+      "income": 30000,
+      "savings": 1000,
+      "rent": 40,
       "categories": [
         {
           "name": "others",
-          "amount": 0
+          "amount": 4344
         },
         {
           "name": "food",
-          "amount": 0
+          "amount": 17376
         },
         {
           "name": "nationCard",
-          "amount": 0
+          "amount": 5792
         },
         {
           "name": "snacks",
-          "amount": 0
+          "amount": 5792
         }
       ]
     }
   },
-  "chrippa": {
-    "password": "choklad",
+  "matilde": {
+    "password": "wiberg",
     "budget": {
-      "income": 0,
-      "savings": 0,
-      "rent": 0,
+      "income": 45000,
+      "savings": 2000,
+      "rent": 1500,
       "categories": [
         {
           "name": "others",
-          "amount": 0
+          "amount": 10000
         },
         {
           "name": "food",
-          "amount": 0
+          "amount": 20000
         },
         {
           "name": "nationCard",
-          "amount": 0
+          "amount": 5000
         },
         {
           "name": "snacks",
-          "amount": 0
+          "amount": 3000
+        }
+      ]
+    }
+  },
+  "kalle": {
+    "password": "kolakaka",
+    "budget": {
+      "income": 30000,
+      "savings": 13100,
+      "rent": 5000,
+      "categories": [
+        {
+          "name": "food",
+          "amount": 1000
+        },
+        {
+          "name": "nation-spendings",
+          "amount": 5000
+        },
+        {
+          "name": "snacks",
+          "amount": 900
+        },
+        {
+          "name": "others",
+          "amount": 5000
         }
       ]
     }

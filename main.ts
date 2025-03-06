@@ -3,6 +3,14 @@
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
 
+
+// kvar att göra
+// 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
+// 2) Fixa så att budgeten kan sparas ner i jsonfilen, när man lägger till ytterligare kategorier. 
+//    I add_categories måste dem sparas ner till rätt användare in i json. 
+// 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
+//    när användaren skapas. 
+
 import * as fs from "fs";
 import * as PromptSync from "prompt-sync";
 import { plotChart } from "./pie_example-2 (1)";
@@ -26,7 +34,8 @@ export type UserBudget = {
 // Användar-typer
 type User = {
     password: string;
-    budget: UserBudget
+    // ska vi också spara income + rent + saving separat?
+    budget: UserBudget;
 };
 
 type Users = Record<string, User>;
@@ -64,9 +73,15 @@ function openData(): Users {
     const data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
     return JSON.parse(data) as Users; // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
+
 function saveData(users: Users): void {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // JSON.stringify(users) konverterar users till en JSON-sträng
-}                                                                        // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
+    try {
+        fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
+        console.log("Data saved successfully!");
+    } catch (error) {
+        console.error("Error saving data:", error);
+    }
+}
 
 function login(): string {
     while (true) {
@@ -106,6 +121,10 @@ function create_account(): Users {
             return users; 
         }
     }
+}
+
+function user_info() {
+    // typ om man skulle få en lista på information 
 }
 
 // Function to retrive income, spendings and saving goal
@@ -185,7 +204,7 @@ function add_to_budget(remaining_budget: number, category: string): number {
 
 function add_categories(budget: UserBudget, remaining_budget: number): UserBudget {
     while (true) {
-        const CustomCategory = prompt("Would you like to add a custom category? (y/n): ");
+        const CustomCategory = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
             if (CustomCategory === "n") {
                 break
             };
@@ -247,14 +266,14 @@ function menu(x: number): string {
     if (x === 3) {
         console.log("\ng) Generate budget \nc) Create your own budget \nv) View earlier budgets \nl) Log out")
     }
-    const choice: string = String(prompt("\nChoose your option: "))
+    const choice: string = String(prompt("\nChoose your option: ")).trim().toLowerCase();
     return choice
 }
 
 function view_budget(username: string, user_data: Array<number>) {
     let users = openData();
 
-    if (username in users && users[username].budget) {
+    if (username in users && users[username].budget) { // and userbudget någon siffra = 0
         const userBudget: UserBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     } else {
@@ -268,20 +287,22 @@ function user_actions(username: string, user_data: Array<number>) {
     console.log("Welcome!");
     const choice = menu(3);
     if (choice === "g") {
+        let users = openData()
         const budget = budget_judge(user_data)
+        users[username].budget = budget; // Uppdatera användarens budget
+        saveData(users);    
         plotChart(budget)
         displayUserBudget(budget)
-        //saveData(users)
     }
 
     if (choice === "c") {
         let users = openData();
         const budget = make_budget(user_data)
         displayUserBudget(budget)
-        const is_budget: string = String(prompt("This is your budget. Doo you want to modify? (y/n): "));
+        const is_budget: string = String(prompt("This is your budget. Doo you want to modify? (y/n): ")).trim().toLowerCase();
 
         if (is_budget === "n") {
-            users[username].budget = budget;
+            users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
             saveData(users)
             plotChart(budget)
             displayUserBudget(budget)
@@ -313,6 +334,7 @@ function main() {
     if (choice === "l") {
         const username = login()
         if (username) {
+            let users = openData()
             let user_data = Userinput()
             user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }

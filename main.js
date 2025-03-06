@@ -3,6 +3,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
+// kvar att göra
+// 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
+// 2) Fixa så att budgeten kan sparas ner i jsonfilen, när man lägger till ytterligare kategorier. 
+//    I add_categories måste dem sparas ner till rätt användare in i json. 
 var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
@@ -38,8 +42,14 @@ function openData() {
     return JSON.parse(data); // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 function saveData(users) {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // JSON.stringify(users) konverterar users till en JSON-sträng
-} // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
+    try {
+        fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
+        console.log("Data saved successfully!");
+    }
+    catch (error) {
+        console.error("Error saving data:", error);
+    }
+}
 function login() {
     while (true) {
         var users = openData();
@@ -73,6 +83,9 @@ function create_account() {
             return users;
         }
     }
+}
+function user_info() {
+    // typ om man skulle få en lista på information 
 }
 // Function to retrive income, spendings and saving goal
 function Userinput() {
@@ -138,7 +151,7 @@ function add_to_budget(remaining_budget, category) {
 }
 function add_categories(budget, remaining_budget) {
     while (true) {
-        var CustomCategory = prompt("Would you like to add a custom category? (y/n): ");
+        var CustomCategory = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
         if (CustomCategory === "n") {
             break;
         }
@@ -193,12 +206,12 @@ function menu(x) {
     if (x === 3) {
         console.log("\ng) Generate budget \nc) Create your own budget \nv) View earlier budgets \nl) Log out");
     }
-    var choice = String(prompt("\nChoose your option: "));
+    var choice = String(prompt("\nChoose your option: ")).trim().toLowerCase();
     return choice;
 }
 function view_budget(username, user_data) {
     var users = openData();
-    if (username in users && users[username].budget) {
+    if (username in users && users[username].budget) { // and userbudget någon siffra = 0
         var userBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     }
@@ -211,23 +224,29 @@ function user_actions(username, user_data) {
     console.log("Welcome!");
     var choice = menu(3);
     if (choice === "g") {
+        var users = openData();
         var budget = budget_judge(user_data);
+        users[username].budget = budget; // Uppdatera användarens budget
+        saveData(users);
         (0, pie_example_2__1_1.plotChart)(budget);
         displayUserBudget(budget);
-        //saveData(users)
     }
     if (choice === "c") {
         var users = openData();
         var budget = make_budget(user_data);
         displayUserBudget(budget);
-        var is_budget = String(prompt("This is your budget. Doo you want to modify? (y/n): "));
+        var is_budget = String(prompt("This is your budget. Doo you want to modify? (y/n): ")).trim().toLowerCase();
         if (is_budget === "n") {
+            users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
             saveData(users);
             (0, pie_example_2__1_1.plotChart)(budget);
             displayUserBudget(budget);
         }
         else {
-            make_budget(user_data);
+            var modified_budget = make_budget(user_data);
+            users[username].budget = modified_budget;
+            saveData(users);
+            (0, pie_example_2__1_1.plotChart)(modified_budget);
         }
     }
     if (choice === "l") {
@@ -248,6 +267,7 @@ function main() {
     if (choice === "l") {
         var username = login();
         if (username) {
+            var users = openData();
             var user_data = Userinput();
             user_actions(username, user_data); // Om inloggningen lyckas, skicka användaren till user_actions()
         }
