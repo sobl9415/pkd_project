@@ -65,6 +65,7 @@ function login() {
         var retry = menu(2);
         if (retry === "q") {
             console.log("Quitting...");
+            return;
         }
     }
 }
@@ -113,15 +114,15 @@ function budget_judge(user_data) {
         remains = income - (savings + rent);
         UserPercentage = {
             others: 25,
-            food: 50,
+            food: 30,
             nationCard: 20,
             snacks: 5
         };
     }
     else if (income > 20000) {
         UserPercentage = {
-            others: 15,
-            food: 60,
+            others: 20,
+            food: 35,
             nationCard: 20,
             snacks: 5
         };
@@ -130,6 +131,8 @@ function budget_judge(user_data) {
     var food = (remains * UserPercentage.food) / 100;
     var nationCard = (remains * UserPercentage.nationCard) / 100;
     var snacks = (remains * UserPercentage.nationCard) / 100;
+    remains = remains - others - food - nationCard - snacks; // lade till för att kunna lägga pengar i savings om man är rik
+    savings += remains;
     var budget = {
         income: income,
         savings: savings,
@@ -161,6 +164,10 @@ function add_categories(budget, remaining_budget) {
         console.log("Your remaining budget amount: ", remaining_budget);
         var CustomCategoryName = prompt("What is the name of your custom category? ");
         var CustomCategoryAmount = Number(prompt("Amount to ".concat(CustomCategoryName, ": ")));
+        while (CustomCategoryAmount > remaining_budget) {
+            console.log("That is not reasonable, try again");
+            CustomCategoryAmount = Number(prompt("Amount to ".concat(CustomCategoryName, ": ")));
+        }
         budget.categories.push({ name: CustomCategoryName, amount: CustomCategoryAmount });
         remaining_budget -= CustomCategoryAmount; // Subtract custom category amount from remaining budget
     }
@@ -213,7 +220,7 @@ function menu(x) {
 }
 function view_budget(username) {
     var users = openData();
-    if (username in users && users[username].budget) { // and userbudget någon siffra = 0
+    if (username in users && users[username].budget.income != 0) { // and userbudget någon siffra = 0
         var userBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     }
@@ -226,33 +233,30 @@ function user_actions(username) {
     console.log("\nWelcome!");
     var choice = menu(3);
     if (choice === "g") {
-        var user_data = Userinput();
         var users = openData();
+        var user_data = Userinput();
         var budget = budget_judge(user_data);
-        console.log(username);
+        var is_budget = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
+        if (is_budget === "y") {
+            budget = make_budget(user_data);
+        }
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);
         (0, pie_example_2__1_1.plotChart)(budget);
-        displayUserBudget(budget);
+        //displayUserBudget(budget)
     }
     if (choice === "c") {
         var users = openData();
         var user_data = Userinput();
         var budget = make_budget(user_data);
-        displayUserBudget(budget);
+        //displayUserBudget(budget)
         var is_budget = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
-        if (is_budget === "n") {
-            users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
-            saveData(users);
-            (0, pie_example_2__1_1.plotChart)(budget);
-            displayUserBudget(budget);
+        if (is_budget === "y") {
+            budget = make_budget(user_data); //displayUserBudget(budget)
         }
-        else {
-            var modified_budget = make_budget(user_data);
-            users[username].budget = modified_budget;
-            saveData(users);
-            (0, pie_example_2__1_1.plotChart)(modified_budget);
-        }
+        users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
+        saveData(users);
+        (0, pie_example_2__1_1.plotChart)(budget);
     }
     if (choice === "l") {
         console.log("logging out...");
@@ -273,10 +277,11 @@ function main() {
         var username = login();
         if (username) {
             var users = openData();
-            // här kan man kolla om personen redan har income osv? fast vad händer om personens inkomst ändras?
-            //if (users.username.budget) {}
             //let user_data = Userinput()
             user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
+        }
+        else {
+            main(); // börjar om om man quittar sin inloggning istället för att fortsätta loopa/stänga ner helt
         }
     }
     if (choice === "c") {

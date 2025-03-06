@@ -28,29 +28,25 @@
   "tilda": {
     "password": "larsson",
     "budget": {
-      "income": 10000,
-      "savings": 2200,
-      "rent": 3000,
+      "income": 130000,
+      "savings": 32850,
+      "rent": 5000,
       "categories": [
         {
-          "name": "food",
-          "amount": 3000
+          "name": "others",
+          "amount": 24250
         },
         {
-          "name": "nation-spendings",
-          "amount": 1000
+          "name": "food",
+          "amount": 29100
+        },
+        {
+          "name": "nationCard",
+          "amount": 19400
         },
         {
           "name": "snacks",
-          "amount": 100
-        },
-        {
-          "name": "others",
-          "amount": 300
-        },
-        {
-          "name": "Fika",
-          "amount": 400
+          "amount": 19400
         }
       ]
     }
@@ -162,25 +158,81 @@
   "pellis": {
     "password": "svans",
     "budget": {
-      "income": 1000,
-      "savings": 300,
-      "rent": 500,
+      "income": 100,
+      "savings": 260,
+      "rent": 10,
       "categories": [
         {
-          "name": "others",
-          "amount": 60
-        },
-        {
           "name": "food",
-          "amount": 100
+          "amount": -200
         },
         {
-          "name": "nationCard",
-          "amount": 30
+          "name": "nation-spendings",
+          "amount": 10
         },
         {
           "name": "snacks",
-          "amount": 30
+          "amount": 10
+        },
+        {
+          "name": "others",
+          "amount": 10
+        }
+      ]
+    }
+  },
+  "dua": {
+    "password": "lipa",
+    "budget": {
+      "income": 10000000,
+      "savings": 6270000,
+      "rent": 300000,
+      "categories": [
+        {
+          "name": "food",
+          "amount": 20000
+        },
+        {
+          "name": "nation-spendings",
+          "amount": 400000
+        },
+        {
+          "name": "snacks",
+          "amount": 10000
+        },
+        {
+          "name": "others",
+          "amount": 2000000
+        },
+        {
+          "name": "Chateau Marmont",
+          "amount": 1000000
+        }
+      ]
+    }
+  },
+  "teste": {
+    "password": "karlsson",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
         }
       ]
     }

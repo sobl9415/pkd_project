@@ -35,7 +35,6 @@ export type UserBudget = {
 type User = {
     password: string;
     // ska vi också spara income + rent + saving separat?
-
     budget: UserBudget;
 };
 
@@ -84,7 +83,7 @@ function saveData(users: Users): void {
     }
 }
 
-function login(): string {
+function login(): string | void {
     while (true) {
         let users = openData()
         const username: string = String(prompt("Username: "));
@@ -99,6 +98,7 @@ function login(): string {
         const retry = menu(2);
         if (retry === "q") {
             console.log("Quitting..."); 
+            return; 
         }
     }
 }
@@ -158,15 +158,15 @@ function budget_judge(user_data: Array<number>): UserBudget {
         remains = income - (savings + rent);
         UserPercentage = {
             others: 25, 
-            food: 50, 
+            food: 30, 
             nationCard: 20, 
             snacks: 5
         };
 
     } else if (income > 20000) {
         UserPercentage = { // man kan unna sig lite mer om man tjänar mer än 20k, eventuellt dra av lite direkt till savings
-            others: 15, 
-            food: 60, 
+            others: 20, 
+            food: 35, 
             nationCard: 20,
             snacks: 5
         };
@@ -176,7 +176,8 @@ function budget_judge(user_data: Array<number>): UserBudget {
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
     const snacks = (remains * UserPercentage.nationCard) / 100;
-
+    remains = remains - others - food - nationCard - snacks // lade till för att kunna lägga pengar i savings om man är rik
+    savings += remains
     
     const budget = {
         income: income, 
@@ -211,7 +212,11 @@ function add_categories(budget: UserBudget, remaining_budget: number): UserBudge
             };
         console.log("Your remaining budget amount: ", remaining_budget)
         const CustomCategoryName = prompt("What is the name of your custom category? ");
-        const CustomCategoryAmount = Number(prompt(`Amount to ${CustomCategoryName}: `));
+        let CustomCategoryAmount = Number(prompt(`Amount to ${CustomCategoryName}: `));
+        while (CustomCategoryAmount > remaining_budget) {
+            console.log("That is not reasonable, try again")
+            CustomCategoryAmount = Number(prompt(`Amount to ${CustomCategoryName}: `));
+        }
         budget.categories.push({name: CustomCategoryName, amount: CustomCategoryAmount });
         remaining_budget -= CustomCategoryAmount;  // Subtract custom category amount from remaining budget
     } 
@@ -273,8 +278,7 @@ function menu(x: number): string {
 
 function view_budget(username: string): void {
     let users = openData();
-
-    if (username in users && users[username].budget) { // and userbudget någon siffra = 0
+    if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
         const userBudget: UserBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     } else {
@@ -283,15 +287,17 @@ function view_budget(username: string): void {
     user_actions(username)
 }
 
-
 function user_actions(username: string): void {
     console.log("\nWelcome!");
     const choice = menu(3);
     if (choice === "g") {
-        const user_data = Userinput()
         let users = openData()
-        const budget = budget_judge(user_data)
-        console.log(username)
+        const user_data = Userinput()
+        let budget = budget_judge(user_data)
+        const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
+        if (is_budget === "y") {
+            budget = make_budget(user_data);
+        }
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);    
         plotChart(budget)
@@ -301,22 +307,16 @@ function user_actions(username: string): void {
     if (choice === "c") {
         let users = openData();
         const user_data = Userinput()
-        const budget = make_budget(user_data)
+        let budget = make_budget(user_data)
         //displayUserBudget(budget)
         const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
-        if (is_budget === "n") {
-            users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
-            saveData(users)
-            plotChart(budget)
-            //displayUserBudget(budget)
-        } else {
-            const modified_budget = make_budget(user_data);
-            users[username].budget = modified_budget;
-            saveData(users);
-            plotChart(modified_budget)
+        if (is_budget === "y") {
+            budget = make_budget(user_data); //displayUserBudget(budget)
         }
-
-    }
+        users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
+        saveData(users)
+        plotChart(budget)
+}
     if (choice === "l") {
         console.log("logging out...")
         main();
@@ -340,6 +340,9 @@ function main() {
             let users = openData()
             //let user_data = Userinput()
             user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
+        }
+        else {
+            main() // börjar om om man quittar sin inloggning istället för att fortsätta loopa/stänga ner helt
         }
     }
 
