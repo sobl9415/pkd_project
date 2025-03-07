@@ -1,10 +1,18 @@
 //Test cases 
 import { create_account, budget_judge, add_to_budget, make_budget, view_budget } from './main.ts'
-import 
 
-//create_account()
-//test the function to create accounts, ensuring it handles cases such as username already taken and successful account creation
-test('creating accounts, ensuring it handles')
+//create_account() - tests ensuring function handles successful account creation
+test('When account already exists', () => {   
+    
+    const result = create_account();
+    expect(result).toBe("newUser");
+})
+
+test('When account already exists', () => {    
+    expect().toBe();
+})
+
+
     
 
 

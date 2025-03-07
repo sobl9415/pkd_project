@@ -12,6 +12,7 @@
 // 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
 //    när användaren skapas. 
 // - fixat tror jag, lade till att om inkomsten är 0 så finns ingen budget
+// kanske ha alla kontot-funktioner i en annan fil?
 
 import * as fs from "fs";
 import * as PromptSync from "prompt-sync";
@@ -20,7 +21,33 @@ import { plotChart } from "./pie_example-2 (1)";
 const prompt = PromptSync();
 const FILE_PATH = "users.json";
 
-// Budget-typer
+// Data definitions
+
+/**
+ * A {BudgetCategory} is a record of a string and a number.
+ * The string represents the name of the category, and the number represents the 
+ * amount in the category. 
+ */
+
+/**
+ * A {UserBudget} is a record of numbers and an array of BudgeCategory.
+ * The numbers represents the amount in income, saving-goal and rent of a user. 
+ * The BudgetCategory[] represents the other categories and their amounts.
+ */
+
+/**
+ * A {User} is a record of a string and a UserBudget.
+ * The string represents the username of the user, 
+ * and the UserBudget is the latest budget created by the user.
+ */
+
+/**
+ * {Users} is a record containing a string and a User. 
+ * The Users represents the different User in the JSON file.
+ * The string represents the username of the user.
+ */
+
+// Types
 type BudgetCategory = {
     name: string;
     amount: number;
@@ -36,11 +63,13 @@ export type UserBudget = {
 // Användar-typer
 type User = {
     password: string;
-    // ska vi också spara income + rent + saving separat?
     budget: UserBudget;
 };
 
-type Users = Record<string, User>;
+type Users = {
+    username : User
+}
+
 
 // Exempel, skriv om som type example eller vad det kallas
 const StandardBudget: UserBudget = {
@@ -64,30 +93,33 @@ const users: Users = {
  */
 
 
-// Funktionerna
+// Functions
 function splash() {
     console.log("Welcome to MONEY MAP, your money mapping friend")
 }
 
-// kanske ha alla kontot-funktioner i en annan fil?
-
+/**
+ * Opens the JSON file and retreives the created users.
+ */
 function openData(): Users {
     const data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
     return JSON.parse(data) as Users; // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 
+/**
+ * Function to save user-data in the JSON file 
+ */
 function saveData(users: Users): void {
     fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
 }
 
 
 /**
- * Prompts user for their username and password 
+ * Allows the user to login to the program. The user enter their username and password 
  * 
  * 
- * @return {string | void }
- * If username and password is correct, the username is reuturned 
- * If incorrect, the user is prompted to quit or retry
+ * @return {string | void } - If username and password is correct, the username is returned 
+ *  - If incorrect, the user is prompted to quit or retry
  */
 export function login(): string | void {
     while (true) {
@@ -110,8 +142,8 @@ export function login(): string | void {
 }
 
 /**
- * Creates account and an empty budget for new user
- * @returns {string} the username of new user
+ * Creates account and an empty budget for new user.
+ * @returns {string} the username of the new user
  */
 export function create_account(): string { // ändrade till att funktionen returnerar nya användarnamnet istället för Users för jag tror inte den behövs
     let users = openData()          // det gör däremot användarnamnet tror jag
@@ -134,13 +166,9 @@ export function create_account(): string { // ändrade till att funktionen retur
     }
 }
 
-/**
-function user_info() {
-    // typ om man skulle få en lista på information 
-}
- */
-
-// Function to retrive income, spendings and saving goal
+/** 
+* Function to retrive income, spendings and saving goal
+*/
 export function Userinput(): Array<number> {
 
     const income: number = Number(prompt("What is your income?: "));
@@ -152,8 +180,8 @@ export function Userinput(): Array<number> {
 
 
 /**
- * Creates a budget from users income, rent and saving-goal based on percentages
- * @param {Array} // an array with info of the users income, rent and saving-goal
+ * Creates a budget from users income, rent and saving-goal based on percentages.
+ * @param {Array} user_data - an array with info of the users income, rent and saving-goal
  * @returns {UserBudget} the new generated budget 
  */
 export function budget_judge(user_data: Array<number>): UserBudget {
@@ -211,7 +239,12 @@ export function budget_judge(user_data: Array<number>): UserBudget {
     return budget;
 }
 
-
+/**
+ * Function to add money from the categories created from the remaining budget
+ * @param {number} remaining_budget - The remaining amount of income to be used for th
+ * @param {string} category - The category that money will be added to. 
+ * @returns {number} amount - The amount to be added to the category
+ */
 export function add_to_budget(remaining_budget: number, category: string): number {
     console.log("Your remaining budget amount (after rent and savings): ", remaining_budget)
     let amount: number = Number(prompt(`Amount to ${category}: `))
@@ -223,7 +256,7 @@ export function add_to_budget(remaining_budget: number, category: string): numbe
 }
 
 /**
- * Allows the user to add categories to their budget
+ * Allows the user to add categories to their budget.
  * @param {UserBudget} budget - the users budget before 
  * @param {number} remaining_budget - the remaining amount of income to be used for th 
  * @returns {UserBudget} the updated budget with the new categories
@@ -247,7 +280,7 @@ function add_categories(budget: UserBudget, remaining_budget: number): UserBudge
  * Creates a budget for the user based on their entered amounts and added categories
  * @param {Array} user_data an array with info of the users income, savings ans rent
  * @param {Array} categories an array with the names of the users budget categories
- * @returns {UserBudget} a budget
+ * @returns {UserBudget} the created budget
  */
 export function make_budget(user_data: Array<number>, categories: Array<string>): UserBudget {
     const income = user_data[0];
@@ -257,7 +290,6 @@ export function make_budget(user_data: Array<number>, categories: Array<string>)
     
     let budget: UserBudget = {income: income, savings: savings, rent: rent, categories: []}
 
-    //const category = 
     let n = 0;
     while (n < categories.length) {
         const amount = add_to_budget(remaining_budget, categories[n])
@@ -287,13 +319,10 @@ function displayUserBudget(result: UserBudget) {
 }
 /**
  * Function to decide which of the possible menus will be shown
- * 
  * @param {number} x the number of the menu
  * @returns {string} - returns the option in the menu that is shown, chosen by the user.
- * 
  * Invariant: Anything other than a single-digit string of the options chosen
  */
-
 function menu(x: number): string {
     if (x === 1) {
         console.log("\nl) Login \nc) Create account \nq) Quit")
@@ -312,11 +341,9 @@ function menu(x: number): string {
  * Function that views earlier budgets created by a user.
  * Either shows the earlier budget or consoles that "no budget has been created yet".
  * If no budget has been created, the function calls on user_action, so one can be created. 
- * 
  * @param {string} username - The username of the user that is logged in
  * @returns {void} 
  */
-
 export function view_budget(username: string): void {
     let users = openData();
     if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
@@ -330,14 +357,11 @@ export function view_budget(username: string): void {
 }
 
 /**
- * This functions contains the user actions on menu(3), where the options are "g" (generate budget), 
- * where
- * "c" create budget, v"v" (view budget), "l" (log ut).
- * 
+ * This functions contains the user actions on menu(3), where the options are 
+ * "g" (generate budget) "c": create budget, "v": view budget, "l": log ut.
  * @param {string} username - The username of the user that is logged in 
  * @returns {void}
  */
-
 function user_actions(username: string): void {
     console.log("\nWelcome!");
     const choice = menu(3);
@@ -383,6 +407,9 @@ function user_actions(username: string): void {
     }
 }
 
+/**
+ * Main function, controlls the program
+ */
 function main() {
     splash()
 
