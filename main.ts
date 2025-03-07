@@ -417,7 +417,13 @@ function user_actions(username: string): void {
 }
 
 /**
- * Main function, controlls the program
+ * Main function controlling flow of the program
+ * Initial menu and handles user choice from following:
+ * - "q":Exits the program.
+ * - "l": Allows user to log in and proceeds to the user actions menu
+ * - "c": Allows user to create a new account. If successful, proceeds to the user actions menu.
+ *
+ * @returns {void} - does not return any value 
  */
 function main() {
     splash()
