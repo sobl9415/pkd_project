@@ -77,14 +77,19 @@ function openData(): Users {
 }
 
 function saveData(users: Users): void {
-    try {
-        fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
-    } catch (error) {
-        console.error("Error saving data:", error);
-    }
+    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
 }
 
-function login(): string | void {
+
+/**
+ * Prompts user for their username and password 
+ * 
+ * 
+ * @return {string | void }
+ * If username and password is correct, the username is reuturned 
+ * If incorrect, the user is prompted to quit or retry
+ */
+export function login(): string | void {
     while (true) {
         let users = openData()
         const username: string = String(prompt("Username: "));
@@ -104,10 +109,14 @@ function login(): string | void {
     }
 }
 
-function create_account(): string { // ändrade till att funktionen returnerar nya användarnamnet istället för Users för jag tror inte den behövs
+/**
+ * Creates account and an empty budget for new user
+ * @returns {string} the username of new user
+ */
+export function create_account(): string { // ändrade till att funktionen returnerar nya användarnamnet istället för Users för jag tror inte den behövs
     let users = openData()          // det gör däremot användarnamnet tror jag
     console.log("New user: ")
-
+    
     while (true) {
         const newUsername: string = String(prompt("Username: "));
 
@@ -125,12 +134,14 @@ function create_account(): string { // ändrade till att funktionen returnerar n
     }
 }
 
+/**
 function user_info() {
     // typ om man skulle få en lista på information 
 }
+ */
 
 // Function to retrive income, spendings and saving goal
-function Userinput(): Array<number> {
+export function Userinput(): Array<number> {
 
     const income: number = Number(prompt("What is your income?: "));
     const savings: number = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
@@ -139,7 +150,13 @@ function Userinput(): Array<number> {
     return [income, savings, rent];
 }
 
-function budget_judge(user_data: Array<number>): UserBudget {
+
+/**
+ * Creates a budget from users income, rent and saving-goal based on percentages
+ * @param {Array} // an array with info of the users income, rent and saving-goal
+ * @returns {UserBudget} the new generated budget 
+ */
+export function budget_judge(user_data: Array<number>): UserBudget {
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -155,8 +172,8 @@ function budget_judge(user_data: Array<number>): UserBudget {
 
     if (income > 50000) {
         console.log("GRISCH")
-        savings = savings + income * 0.20; // ta bort en del av inkomst direkt till savings
-        remains = income - (savings + rent);
+        savings += remains * 0.20; // ta bort en del av inkomst direkt till savings
+        remains = income - (savings + rent); 
         UserPercentage = {
             others: 25, 
             food: 30, 
@@ -165,6 +182,8 @@ function budget_judge(user_data: Array<number>): UserBudget {
         };
 
     } else if (income > 20000) {
+        savings += remains * 0.20; // ta bort en del av inkomst direkt till savings
+        remains = income - (savings + rent);
         UserPercentage = { // man kan unna sig lite mer om man tjänar mer än 20k, eventuellt dra av lite direkt till savings
             others: 20, 
             food: 35, 
@@ -177,10 +196,6 @@ function budget_judge(user_data: Array<number>): UserBudget {
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
     const snacks = (remains * UserPercentage.nationCard) / 100;
-    remains = remains - others - food - nationCard - snacks // lade till för att kunna lägga pengar i savings om man är rik
-    if (remains > 0) {
-        savings += remains
-    }
     
     const budget = {
         income: income, 
@@ -197,38 +212,44 @@ function budget_judge(user_data: Array<number>): UserBudget {
 }
 
 
-function add_to_budget(remaining_budget: number, category: string): number {
+export function add_to_budget(remaining_budget: number, category: string): number {
     console.log("Your remaining budget amount (after rent and savings): ", remaining_budget)
-    let amount: number = Number(prompt("Amount to " + category + ": "))
+    let amount: number = Number(prompt(`Amount to ${category}: `))
     while (amount > remaining_budget) {
         console.log("That is not reasonable, try again")
-        amount = Number(prompt("Amount to " + category + ": "))
+        amount = Number(prompt(`Amount to ${category}: `))
     }
     return amount;
 }
 
+/**
+ * Allows the user to add categories to their budget
+ * @param {UserBudget} budget - the users budget before 
+ * @param {number} remaining_budget - the remaining amount of income to be used for th 
+ * @returns {UserBudget} the updated budget with the new categories
+ */
 function add_categories(budget: UserBudget, remaining_budget: number): UserBudget {
     while (true) {
-        const CustomCategory = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
-            if (CustomCategory === "n") {
+        const if_category = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
+            if (if_category === "n") {
                 break
             };
-        console.log("Your remaining budget amount: ", remaining_budget)
-        const CustomCategoryName = prompt("What is the name of your custom category? ");
-        let CustomCategoryAmount = Number(prompt(`Amount to ${CustomCategoryName}: `));
-        while (CustomCategoryAmount > remaining_budget) {
-            console.log("That is not reasonable, try again")
-            CustomCategoryAmount = Number(prompt(`Amount to ${CustomCategoryName}: `));
-        }
-        budget.categories.push({name: CustomCategoryName, amount: CustomCategoryAmount });
-        remaining_budget -= CustomCategoryAmount;  // Subtract custom category amount from remaining budget
+        const category_name = prompt("What is the name of your custom category? ");
+        const amount = add_to_budget(remaining_budget, category_name)
+        budget.categories.push({name: category_name, amount: amount });
+        remaining_budget -= amount;  // Subtract custom category amount from remaining budget
     } 
     budget.savings += remaining_budget
     return budget
 }
 
-
-function make_budget(user_data: Array<number>, categories: Array<string>): UserBudget {
+/**
+ * Creates a budget for the user based on their entered amounts and added categories
+ * @param {Array} user_data an array with info of the users income, savings ans rent
+ * @param {Array} categories an array with the names of the users budget categories
+ * @returns {UserBudget} a budget
+ */
+export function make_budget(user_data: Array<number>, categories: Array<string>): UserBudget {
     const income = user_data[0];
     let savings = user_data[1];
     const rent = user_data[2];
@@ -264,6 +285,14 @@ function displayUserBudget(result: UserBudget) {
     console.log("Your recomended budget on the category nation card is:", nationCard);
     //console.log("Does this budget seem okay or do you want to modify");
 }
+/**
+ * Function to decide which of the possible menus will be shown
+ * 
+ * @param {number} x the number of the menu
+ * @returns {string} - returns the option in the menu that is shown, chosen by the user.
+ * 
+ * Invariant: Anything other than a single-digit string of the options chosen
+ */
 
 function menu(x: number): string {
     if (x === 1) {
@@ -279,7 +308,16 @@ function menu(x: number): string {
     return choice
 }
 
-function view_budget(username: string): void {
+/**
+ * Function that views earlier budgets created by a user.
+ * Either shows the earlier budget or consoles that "no budget has been created yet".
+ * If no budget has been created, the function calls on user_action, so one can be created. 
+ * 
+ * @param {string} username - The username of the user that is logged in
+ * @returns {void} 
+ */
+
+export function view_budget(username: string): void {
     let users = openData();
     if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
         // här kanske vi kan ta bort 
@@ -290,6 +328,15 @@ function view_budget(username: string): void {
     }
     user_actions(username)
 }
+
+/**
+ * This functions contains the user actions on menu(3), where the options are "g" (generate budget), 
+ * where
+ * "c" create budget, v"v" (view budget), "l" (log ut).
+ * 
+ * @param {string} username - The username of the user that is logged in 
+ * @returns {void}
+ */
 
 function user_actions(username: string): void {
     console.log("\nWelcome!");
@@ -363,44 +410,6 @@ function main() {
             user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
         }
     }
-
-   
-
-    /**
-    let user_data = Userinput() 
-    const choose_budget: string | null = prompt("Do you want to use money maps recommended budget? y/n ")
-    if (choose_budget === "n") {
-        const budget = make_budget(user_data) // skapa din egen budget
-        plotChart(budget)
-        displayUserBudget(budget)
-    }
-    else {
-        const budget = budget_judge(user_data)
-        plotChart(budget)
-        displayUserBudget(budget)
-
-    }
-     */
-    
-    //const budget = budget_judge(user_data)
-    //plotChart(budget)
-    // make_budget()  
-    // make_chart()
-    //displayUserBudget(budget)
 }
-
 main();
-
-
-
-/**
-function choose_budget(user_data: Array<number>) {
-    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
-    //const user_data = Userinput(); // Plocka ut promtsen
-    const income = user_data[0];
-    let savings = user_data[1];
-    const rent = user_data[2];
-    let remains = income - (savings + rent); 
-}
- */
 

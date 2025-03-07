@@ -92,17 +92,17 @@
   "kalle": {
     "password": "kolakaka",
     "budget": {
-      "income": 90000,
-      "savings": 74200,
-      "rent": 3000,
+      "income": 40000,
+      "savings": 26100,
+      "rent": 5000,
       "categories": [
         {
           "name": "food",
-          "amount": 1000
+          "amount": 5000
         },
         {
           "name": "nation-spendings",
-          "amount": 300
+          "amount": 1000
         },
         {
           "name": "snacks",
@@ -110,11 +110,15 @@
         },
         {
           "name": "others",
-          "amount": 7000
+          "amount": 1000
         },
         {
           "name": "godis",
-          "amount": 4000
+          "amount": 400
+        },
+        {
+          "name": "kakor",
+          "amount": 1000
         }
       ]
     }

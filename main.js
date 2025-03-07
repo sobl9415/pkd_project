@@ -1,6 +1,13 @@
 "use strict";
 //import {Chart, ArcElement, Tooltip, Legend} from 'chart.js/auto'; 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.login = login;
+exports.create_account = create_account;
+exports.Userinput = Userinput;
+exports.budget_judge = budget_judge;
+exports.add_to_budget = add_to_budget;
+exports.make_budget = make_budget;
+exports.view_budget = view_budget;
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
 // kvar att göra
@@ -46,12 +53,7 @@ function openData() {
     return JSON.parse(data); // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 function saveData(users) {
-    try {
-        fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
-    }
-    catch (error) {
-        console.error("Error saving data:", error);
-    }
+    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
 }
 function login() {
     while (true) {
@@ -88,25 +90,16 @@ function create_account() {
         }
     }
 }
+/**
 function user_info() {
-    // typ om man skulle få en lista på information 
+    // typ om man skulle få en lista på information
 }
+ */
 // Function to retrive income, spendings and saving goal
 function Userinput() {
-    var savings = 0;
-    var rent = 0;
     var income = Number(prompt("What is your income?: "));
-    while (income - savings < 0) {
-        console.log("That is not reasonable, try again");
-        savings = Number(prompt("What is your saving goal?: ")); // Uppdaterar `savings`
-    }
-    while (true) {
-        var rent_1 = Number(prompt("What is your rent?: "));
-        if (income - savings - rent_1 < 0) {
-            console.log("That is not reasonable, try again");
-            break;
-        }
-    }
+    var savings = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
+    var rent = Number(prompt("What is your rent?: ")); // samma här
     return [income, savings, rent];
 }
 function budget_judge(user_data) {
@@ -161,29 +154,24 @@ function budget_judge(user_data) {
 }
 function add_to_budget(remaining_budget, category) {
     console.log("Your remaining budget amount (after rent and savings): ", remaining_budget);
-    var amount = Number(prompt("Amount to " + category + ": "));
+    var amount = Number(prompt("Amount to ".concat(category, ": ")));
     while (amount > remaining_budget) {
         console.log("That is not reasonable, try again");
-        amount = Number(prompt("Amount to " + category + ": "));
+        amount = Number(prompt("Amount to ".concat(category, ": ")));
     }
     return amount;
 }
 function add_categories(budget, remaining_budget) {
     while (true) {
-        var CustomCategory = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
-        if (CustomCategory === "n") {
+        var if_category = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
+        if (if_category === "n") {
             break;
         }
         ;
-        console.log("Your remaining budget amount: ", remaining_budget);
-        var CustomCategoryName = prompt("What is the name of your custom category? ");
-        var CustomCategoryAmount = Number(prompt("Amount to ".concat(CustomCategoryName, ": ")));
-        while (CustomCategoryAmount > remaining_budget) {
-            console.log("That is not reasonable, try again");
-            CustomCategoryAmount = Number(prompt("Amount to ".concat(CustomCategoryName, ": ")));
-        }
-        budget.categories.push({ name: CustomCategoryName, amount: CustomCategoryAmount });
-        remaining_budget -= CustomCategoryAmount; // Subtract custom category amount from remaining budget
+        var category_name = prompt("What is the name of your custom category? ");
+        var amount = add_to_budget(remaining_budget, category_name);
+        budget.categories.push({ name: category_name, amount: amount });
+        remaining_budget -= amount; // Subtract custom category amount from remaining budget
     }
     budget.savings += remaining_budget;
     return budget;
@@ -312,35 +300,5 @@ function main() {
             user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
         }
     }
-    /**
-    let user_data = Userinput()
-    const choose_budget: string | null = prompt("Do you want to use money maps recommended budget? y/n ")
-    if (choose_budget === "n") {
-        const budget = make_budget(user_data) // skapa din egen budget
-        plotChart(budget)
-        displayUserBudget(budget)
-    }
-    else {
-        const budget = budget_judge(user_data)
-        plotChart(budget)
-        displayUserBudget(budget)
-
-    }
-     */
-    //const budget = budget_judge(user_data)
-    //plotChart(budget)
-    // make_budget()  
-    // make_chart()
-    //displayUserBudget(budget)
 }
 main();
-/**
-function choose_budget(user_data: Array<number>) {
-    // för menyn, om man vill välja vilken förbestämd budget man vill ha oberoende av inkomst
-    //const user_data = Userinput(); // Plocka ut promtsen
-    const income = user_data[0];
-    let savings = user_data[1];
-    const rent = user_data[2];
-    let remains = income - (savings + rent);
-}
- */
