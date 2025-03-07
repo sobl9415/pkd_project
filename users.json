@@ -92,33 +92,25 @@
   "kalle": {
     "password": "kolakaka",
     "budget": {
-      "income": 40000,
-      "savings": 26100,
-      "rent": 5000,
+      "income": 10000,
+      "savings": 2000,
+      "rent": 3000,
       "categories": [
         {
-          "name": "food",
-          "amount": 5000
+          "name": "others",
+          "amount": 1500
         },
         {
-          "name": "nation-spendings",
-          "amount": 1000
+          "name": "food",
+          "amount": 2000
+        },
+        {
+          "name": "nationCard",
+          "amount": 750
         },
         {
           "name": "snacks",
-          "amount": 500
-        },
-        {
-          "name": "others",
-          "amount": 1000
-        },
-        {
-          "name": "godis",
-          "amount": 400
-        },
-        {
-          "name": "kakor",
-          "amount": 1000
+          "amount": 750
         }
       ]
     }

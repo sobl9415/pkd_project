@@ -18,11 +18,13 @@ exports.view_budget = view_budget;
 // 3) Om någon siffra i json är 0, så finns ingen tidigare budget, ska ej skrivas ut alla kategorier nollade. En nollad budget skapas
 //    när användaren skapas. 
 // - fixat tror jag, lade till att om inkomsten är 0 så finns ingen budget
+// kanske ha alla kontot-funktioner i en annan fil?
 var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
 var FILE_PATH = "users.json";
+//let users: Users = {};
 // Exempel, skriv om som type example eller vad det kallas
 var StandardBudget = {
     income: 0,
@@ -43,18 +45,30 @@ const users: Users = {
     matilde: { password: "wiberg" }
 };
  */
-// Funktionerna
+// Functions
 function splash() {
     console.log("Welcome to MONEY MAP, your money mapping friend");
 }
-// kanske ha alla kontot-funktioner i en annan fil?
+/**
+ * Opens the JSON file and retreives the created users.
+ */
 function openData() {
     var data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
     return JSON.parse(data); // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
+/**
+ * Function to save user-data in the JSON file
+ */
 function saveData(users) {
     fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
 }
+/**
+ * Allows the user to login to the program. The user enter their username and password
+ *
+ *
+ * @return {string | void } - If username and password is correct, the username is returned
+ *  - If incorrect, the user is prompted to quit or retry
+ */
 function login() {
     while (true) {
         var users = openData();
@@ -72,6 +86,10 @@ function login() {
         }
     }
 }
+/**
+ * Creates account and an empty budget for new user.
+ * @returns {string} the username of the new user
+ */
 function create_account() {
     var users = openData(); // det gör däremot användarnamnet tror jag
     console.log("New user: ");
@@ -91,17 +109,19 @@ function create_account() {
     }
 }
 /**
-function user_info() {
-    // typ om man skulle få en lista på information
-}
- */
-// Function to retrive income, spendings and saving goal
+* Function to retrive income, spendings and saving goal
+*/
 function Userinput() {
     var income = Number(prompt("What is your income?: "));
     var savings = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
     var rent = Number(prompt("What is your rent?: ")); // samma här
     return [income, savings, rent];
 }
+/**
+ * Creates a budget from users income, rent and saving-goal based on percentages.
+ * @param {Array} user_data - an array with info of the users income, rent and saving-goal
+ * @returns {UserBudget} the new generated budget
+ */
 function budget_judge(user_data) {
     var income = user_data[0];
     var savings = user_data[1];
@@ -115,7 +135,7 @@ function budget_judge(user_data) {
     };
     if (income > 50000) {
         console.log("GRISCH");
-        savings = savings + income * 0.20; // ta bort en del av inkomst direkt till savings
+        savings += remains * 0.20; // ta bort en del av inkomst direkt till savings
         remains = income - (savings + rent);
         UserPercentage = {
             others: 25,
@@ -125,6 +145,8 @@ function budget_judge(user_data) {
         };
     }
     else if (income > 20000) {
+        savings += remains * 0.20; // ta bort en del av inkomst direkt till savings
+        remains = income - (savings + rent);
         UserPercentage = {
             others: 20,
             food: 35,
@@ -136,10 +158,6 @@ function budget_judge(user_data) {
     var food = (remains * UserPercentage.food) / 100;
     var nationCard = (remains * UserPercentage.nationCard) / 100;
     var snacks = (remains * UserPercentage.nationCard) / 100;
-    remains = remains - others - food - nationCard - snacks; // lade till för att kunna lägga pengar i savings om man är rik
-    if (remains > 0) {
-        savings += remains;
-    }
     var budget = {
         income: income,
         savings: savings,
@@ -152,6 +170,12 @@ function budget_judge(user_data) {
     console.log(budget);
     return budget;
 }
+/**
+ * Function to add money from the categories created from the remaining budget
+ * @param {number} remaining_budget - The remaining amount of income to be used for th
+ * @param {string} category - The category that money will be added to.
+ * @returns {number} amount - The amount to be added to the category
+ */
 function add_to_budget(remaining_budget, category) {
     console.log("Your remaining budget amount (after rent and savings): ", remaining_budget);
     var amount = Number(prompt("Amount to ".concat(category, ": ")));
@@ -161,9 +185,15 @@ function add_to_budget(remaining_budget, category) {
     }
     return amount;
 }
+/**
+ * Allows the user to add categories to their budget.
+ * @param {UserBudget} budget - the users budget before
+ * @param {number} remaining_budget - the remaining amount of income to be used for th
+ * @returns {UserBudget} the updated budget with the new categories
+ */
 function add_categories(budget, remaining_budget) {
     while (true) {
-        var if_category = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
+        var if_category = prompt("Would you like to add a custom category? (y/n): "); //.trim().toLowerCase();
         if (if_category === "n") {
             break;
         }
@@ -176,13 +206,18 @@ function add_categories(budget, remaining_budget) {
     budget.savings += remaining_budget;
     return budget;
 }
+/**
+ * Creates a budget for the user based on their entered amounts and added categories
+ * @param {Array} user_data an array with info of the users income, savings ans rent
+ * @param {Array} categories an array with the names of the users budget categories
+ * @returns {UserBudget} the created budget
+ */
 function make_budget(user_data, categories) {
     var income = user_data[0];
     var savings = user_data[1];
     var rent = user_data[2];
     var remaining_budget = income - (savings + rent);
     var budget = { income: income, savings: savings, rent: rent, categories: [] };
-    //const category = 
     var n = 0;
     while (n < categories.length) {
         var amount = add_to_budget(remaining_budget, categories[n]);
@@ -207,6 +242,12 @@ function displayUserBudget(result) {
     console.log("Your recomended budget on the category nation card is:", nationCard);
     //console.log("Does this budget seem okay or do you want to modify");
 }
+/**
+ * Function to decide which of the possible menus will be shown
+ * @param {number} x the number of the menu
+ * @returns {string} - returns the option in the menu that is shown, chosen by the user.
+ * Invariant: Anything other than a single-digit string of the options chosen
+ */
 function menu(x) {
     if (x === 1) {
         console.log("\nl) Login \nc) Create account \nq) Quit");
@@ -220,6 +261,13 @@ function menu(x) {
     var choice = String(prompt("\nChoose your option: ")).trim().toLowerCase();
     return choice;
 }
+/**
+ * Function that views earlier budgets created by a user.
+ * Either shows the earlier budget or consoles that "no budget has been created yet".
+ * If no budget has been created, the function calls on user_action, so one can be created.
+ * @param {string} username - The username of the user that is logged in
+ * @returns {void}
+ */
 function view_budget(username) {
     var users = openData();
     if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
@@ -232,6 +280,12 @@ function view_budget(username) {
     }
     user_actions(username);
 }
+/**
+ * This functions contains the user actions on menu(3), where the options are
+ * "g" (generate budget) "c": create budget, "v": view budget, "l": log ut.
+ * @param {string} username - The username of the user that is logged in
+ * @returns {void}
+ */
 function user_actions(username) {
     console.log("\nWelcome!");
     var choice = menu(3);
@@ -275,6 +329,9 @@ function user_actions(username) {
         view_budget(username);
     }
 }
+/**
+ * Main function, controlls the program
+ */
 function main() {
     splash();
     var choice = menu(1);

@@ -66,9 +66,18 @@ type User = {
     budget: UserBudget;
 };
 
+//type Users = {
+//    username : User
+//}
+
+//type Users
+
 type Users = {
-    username : User
-}
+    [key: string]: User;
+};
+
+//let users: Users = {};
+
 
 
 // Exempel, skriv om som type example eller vad det kallas
@@ -263,13 +272,13 @@ export function add_to_budget(remaining_budget: number, category: string): numbe
  */
 function add_categories(budget: UserBudget, remaining_budget: number): UserBudget {
     while (true) {
-        const if_category = prompt("Would you like to add a custom category? (y/n): ").trim().toLowerCase();
+        const if_category = prompt("Would you like to add a custom category? (y/n): ") //.trim().toLowerCase();
             if (if_category === "n") {
                 break
             };
         const category_name = prompt("What is the name of your custom category? ");
-        const amount = add_to_budget(remaining_budget, category_name)
-        budget.categories.push({name: category_name, amount: amount });
+        const amount = add_to_budget(remaining_budget, category_name!)
+        budget.categories.push({name: category_name!, amount: amount });
         remaining_budget -= amount;  // Subtract custom category amount from remaining budget
     } 
     budget.savings += remaining_budget
@@ -366,12 +375,12 @@ function user_actions(username: string): void {
     console.log("\nWelcome!");
     const choice = menu(3);
     if (choice === "g") {
-        let users = openData()
+        let users: Users = openData()
         const user_data = Userinput()
         let budget = budget_judge(user_data)
         const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
         if (is_budget === "y") {
-            let categories = users[username].budget.categories.map(category => category.name);
+            let categories: Array<string> = users[username].budget.categories.map(category => category.name);
             budget = make_budget(user_data, categories);
         }
         users[username].budget = budget; // Uppdatera användarens budget
@@ -381,7 +390,7 @@ function user_actions(username: string): void {
     }
 
     if (choice === "c") {
-        let users = openData();
+        let users: Users = openData();
         const user_data = Userinput()
         let categories = users[username].budget.categories.map(category => category.name);
         let budget = make_budget(user_data, categories)

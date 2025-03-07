@@ -8,18 +8,11 @@ test('When account already exists', () => {
     expect(result).toBe("newUser");
 })
 
-test('When account already exists', () => {    
-    expect().toBe();
-})
+//test('When account already exists', () => {    
+//    expect().toBe();
+//})
 
 
-    
-
-
-test('Väg som inte finns, gå från 2 till 3', () => {
-        const test_result = lg_shortest_path(listgraph_2, 2, 3)
-        expect(test_result).toEqual(null);
-    })
 
 
 
@@ -40,3 +33,19 @@ test('Väg som inte finns, gå från 2 till 3', () => {
 
 //view_budget() 
 //
+
+//budget_judge
+test('Creates budget from given Userinput', () => {   
+    const result = budget_judge([10000, 2000, 3000]);
+    expect(result).toBe({
+        income: 10000,
+        savings: 2000,
+        rent: 3000,
+        categories: [
+          { name: 'others', amount: 1500 },
+          { name: 'food', amount: 2000 },
+          { name: 'nationCard', amount: 750 },
+          { name: 'snacks', amount: 750 }
+        ]
+      });
+})
