@@ -13,12 +13,6 @@ test('When account already exists', () => {
 //})
 
 
-
-
-
-
-
-
 //login()
 //ensure correct validation of username and password
 
@@ -49,3 +43,33 @@ test('Creates budget from given Userinput', () => {
         ]
       });
 })
+
+test('Creates budget from given user input, with income greater than 20000', () => {   
+  const result = budget_judge([25000, 5000, 3000]);
+  expect(result).toBe({
+      income: 25000,
+      savings: 7000,  
+      rent: 3000,
+      categories: [
+        { name: 'others', amount: 3200 },
+        { name: 'food', amount: 4200 }, 
+        { name: 'nationCard', amount: 2400 }, 
+        { name: 'snacks', amount: 1200 } 
+      ]
+  });
+});
+
+test('Very high income over 40000', () => {   
+  const result = budget_judge([1000000, 500, 1000]);
+  expect(result).toBe({
+      income: 1000000,
+      savings: 200500,  
+      rent: 1000,
+      categories: [
+        { name: 'others', amount: 199800 }, 
+        { name: 'food', amount: 349725 }, 
+        { name: 'nationCard', amount: 199700 }, 
+        { name: 'snacks', amount: 99900 }
+      ]
+  });
+});

@@ -22,7 +22,6 @@ const prompt = PromptSync();
 const FILE_PATH = "users.json";
 
 // Data definitions
-
 /**
  * A {BudgetCategory} is a record of a string and a number.
  * The string represents the name of the category, and the number represents the 
@@ -60,7 +59,7 @@ export type UserBudget = {
     categories: BudgetCategory[];
 };
 
-// Användar-typer
+// User-types
 type User = {
     password: string;
     budget: UserBudget;
@@ -79,8 +78,7 @@ type Users = {
 //let users: Users = {};
 
 
-
-// Exempel, skriv om som type example eller vad det kallas
+//Standard budget object for a user, initializing all values to 0
 const StandardBudget: UserBudget = {
     income: 0,
     savings: 0,
@@ -100,6 +98,7 @@ const users: Users = {
     matilde: { password: "wiberg" }
 };
  */
+
 
 
 // Functions
@@ -125,7 +124,6 @@ function saveData(users: Users): void {
 
 /**
  * Allows the user to login to the program. The user enter their username and password 
- * 
  * 
  * @return {string | void } - If username and password is correct, the username is returned 
  *  - If incorrect, the user is prompted to quit or retry
@@ -190,6 +188,7 @@ export function Userinput(): Array<number> {
 
 /**
  * Creates a budget from users income, rent and saving-goal based on percentages.
+ * 
  * @param {Array} user_data - an array with info of the users income, rent and saving-goal
  * @returns {UserBudget} the new generated budget 
  */
@@ -250,6 +249,7 @@ export function budget_judge(user_data: Array<number>): UserBudget {
 
 /**
  * Function to add money from the categories created from the remaining budget
+ * 
  * @param {number} remaining_budget - The remaining amount of income to be used for th
  * @param {string} category - The category that money will be added to. 
  * @returns {number} amount - The amount to be added to the category
