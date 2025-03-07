@@ -48,7 +48,6 @@ function openData() {
 function saveData(users) {
     try {
         fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
-        console.log("Data saved successfully!");
     }
     catch (error) {
         console.error("Error saving data:", error);
@@ -94,9 +93,20 @@ function user_info() {
 }
 // Function to retrive income, spendings and saving goal
 function Userinput() {
+    var savings = 0;
+    var rent = 0;
     var income = Number(prompt("What is your income?: "));
-    var savings = Number(prompt("What is your saving goal?: ")); // felkontroll så det ej är större än income
-    var rent = Number(prompt("What is your rent?: ")); // samma här
+    while (income - savings < 0) {
+        console.log("That is not reasonable, try again");
+        savings = Number(prompt("What is your saving goal?: ")); // Uppdaterar `savings`
+    }
+    while (true) {
+        var rent_1 = Number(prompt("What is your rent?: "));
+        if (income - savings - rent_1 < 0) {
+            console.log("That is not reasonable, try again");
+            break;
+        }
+    }
     return [income, savings, rent];
 }
 function budget_judge(user_data) {
@@ -150,7 +160,7 @@ function budget_judge(user_data) {
     return budget;
 }
 function add_to_budget(remaining_budget, category) {
-    console.log("Your remaining budget amount: ", remaining_budget);
+    console.log("Your remaining budget amount (after rent and savings): ", remaining_budget);
     var amount = Number(prompt("Amount to " + category + ": "));
     while (amount > remaining_budget) {
         console.log("That is not reasonable, try again");
@@ -225,11 +235,12 @@ function menu(x) {
 function view_budget(username) {
     var users = openData();
     if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
+        // här kanske vi kan ta bort 
         var userBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     }
     else {
-        console.log("User not found or no budget has been created");
+        console.log("No budget has been created yet");
     }
     user_actions(username);
 }

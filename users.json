@@ -92,9 +92,9 @@
   "kalle": {
     "password": "kolakaka",
     "budget": {
-      "income": 30000,
-      "savings": 13100,
-      "rent": 5000,
+      "income": 90000,
+      "savings": 74200,
+      "rent": 3000,
       "categories": [
         {
           "name": "food",
@@ -102,15 +102,19 @@
         },
         {
           "name": "nation-spendings",
-          "amount": 5000
+          "amount": 300
         },
         {
           "name": "snacks",
-          "amount": 900
+          "amount": 500
         },
         {
           "name": "others",
-          "amount": 5000
+          "amount": 7000
+        },
+        {
+          "name": "godis",
+          "amount": 4000
         }
       ]
     }
@@ -225,6 +229,88 @@
   },
   "teste": {
     "password": "karlsson",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
+  },
+  "helena": {
+    "password": "helleflundra",
+    "budget": {
+      "income": 4000,
+      "savings": 1190,
+      "rent": 10,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 1000
+        },
+        {
+          "name": "food",
+          "amount": 300
+        },
+        {
+          "name": "nationCard",
+          "amount": 500
+        },
+        {
+          "name": "snacks",
+          "amount": 900
+        },
+        {
+          "name": "hej",
+          "amount": 100
+        }
+      ]
+    }
+  },
+  "test1": {
+    "password": "test1",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
+  },
+  "hej": {
+    "password": "hejd",
     "budget": {
       "income": 0,
       "savings": 0,

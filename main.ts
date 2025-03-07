@@ -79,7 +79,6 @@ function openData(): Users {
 function saveData(users: Users): void {
     try {
         fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8"); // null, 2 används för att formatera JSON-filen med indrag (2 mellanslag per nivå)
-        console.log("Data saved successfully!");
     } catch (error) {
         console.error("Error saving data:", error);
     }
@@ -199,7 +198,7 @@ function budget_judge(user_data: Array<number>): UserBudget {
 
 
 function add_to_budget(remaining_budget: number, category: string): number {
-    console.log("Your remaining budget amount: ", remaining_budget)
+    console.log("Your remaining budget amount (after rent and savings): ", remaining_budget)
     let amount: number = Number(prompt("Amount to " + category + ": "))
     while (amount > remaining_budget) {
         console.log("That is not reasonable, try again")
@@ -283,10 +282,11 @@ function menu(x: number): string {
 function view_budget(username: string): void {
     let users = openData();
     if (username in users && users[username].budget.income != 0) { // kollar nu så att income inte är noll
+        // här kanske vi kan ta bort 
         const userBudget: UserBudget = users[username].budget;
         console.log("Your budget:", userBudget);
     } else {
-        console.log("User not found or no budget has been created");
+        console.log("No budget has been created yet");
     }
     user_actions(username)
 }
