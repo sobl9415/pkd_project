@@ -128,50 +128,38 @@ function saveData(users: Users): void {
  * @return {string | void } - If username and password is correct, the username is returned 
  *  - If incorrect, the user is prompted to quit or retry
  */
-export function login(): string | void {
-    while (true) {
-        let users = openData()
-        const username: string = String(prompt("Username: "));
-        const password: string = String(prompt("Password: "));
-
-        if (username in users && users[username].password === password) {
-            console.log("Login successful!");
-            return username;
-        } 
-        
+export function login(username: string, password: string): string | void {
+    let users = openData()
+    
+    if (username in users && users[username].password === password) {   
+        console.log("Login successful!");   
+        return username;   
+    } else {
         console.log("Incorrect username or password");
-        const retry = menu(2);
-        if (retry === "q") {
-            console.log("Quitting..."); 
-            return; 
-        }
-    }
+        return;
+   }
 }
+
 
 /**
  * Creates account and an empty budget for new user.
  * @returns {string} the username of the new user
  */
-export function create_account(): string { // ändrade till att funktionen returnerar nya användarnamnet istället för Users för jag tror inte den behövs
-    let users = openData()          // det gör däremot användarnamnet tror jag
-    console.log("New user: ")
+export function create_account(username: string, password: string): string | void {
+    let users = openData()    
+    console.log("Creating new user...")
     
-    while (true) {
-        const newUsername: string = String(prompt("Username: "));
-
-        if (newUsername in users) {
-            console.log("Username is already taken")
-
-        } else {
-            const newPassword: string = String(prompt("Password: "));
-            const startBudget: number = 0;
-            users[newUsername] = { password: newPassword, budget: StandardBudget };
-            console.log("Account created successfully!");
-            saveData(users)
-            return newUsername; 
-        }
-    }
+    if (username in users) {
+        console.log("Username is already taken")
+        return;
+    } else {   
+        users[username] = { password: password, budget: StandardBudget };
+        console.log("\nAccount created successfully!");   
+        saveData(users)
+        return username; 
+    }   
 }
+
 
 /** 
 * Function to retrive income, spendings and saving goal
@@ -433,25 +421,37 @@ function main() {
         console.log("quitting....")
         return;
     }
+
     if (choice === "l") {
-        const username = login()
-        if (username) {
-            let users = openData()
-            //let user_data = Userinput()
-            user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
+        let logged_in_user: string | void = ""
+        while (true) {
+            const username: string = String(prompt("Username: "));
+            const password: string = String(prompt("Password: "));
+            logged_in_user = login(username, password)
+            if (username === logged_in_user) {
+                break // Om inloggningen lyckas, skicka användaren till user_actions()
+            } else {
+                const retry = menu(2)
+                if (retry === "q") {
+                    return main()
+                }
+            }
         }
-        else {
-            main() // börjar om om man quittar sin inloggning istället för att fortsätta loopa/stänga ner helt
-        }
+        user_actions(logged_in_user);
     }
 
     if (choice === "c") {
-        const username = create_account();
-        if (username) { // om vi ska gå vidare eller ej, if true
-            //let user_data = Userinput()
-            user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
+        console.log("New user:\n")
+        let created_user: string | void = ""
+        while (true) {
+            const username: string = String(prompt("Username: "));
+            const password: string = String(prompt("Password: "));
+            created_user = create_account(username, password);
+            if (created_user) { // om vi ska gå vidare eller ej, if true
+                break 
+            } 
         }
-    }
+        user_actions(created_user);
+    }  
 }
-main();
-
+main()

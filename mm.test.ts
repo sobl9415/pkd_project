@@ -1,32 +1,31 @@
 //Test cases 
-import { create_account, budget_judge, add_to_budget, make_budget, view_budget } from './main.ts'
+import { create_account, budget_judge, add_to_budget, make_budget, view_budget, login } from './main.ts'
 
 //create_account() - tests ensuring function handles successful account creation
 test('When account already exists', () => {   
-    
     const result = create_account();
     expect(result).toBe("newUser");
 })
 
-//test('When account already exists', () => {    
-//    expect().toBe();
-//})
+//login() - ensure correct validation of username and password
+test('Login with correct username and password', () => {   
+  const exampleUser = { username: "testUser", password: "testPassword" };  
+  const result = login(exampleUser.username, exampleUser.password);  // Assuming the login function accepts username and password as arguments
+  expect(result).toBe("testUser");
+});
 
+test('Login with incorrect username or password', () => {
+  const result = login("wrongUser", "wrongPassword");
+  expect(result).toBe(undefined);  // Assuming login returns undefined on failure
+});
 
-//login()
-//ensure correct validation of username and password
-
-//budget_judge
-//test if budget categories are correctly calculated 
 
 //add_to_budget()
-//
 
 //make_budget
-//
 
 //view_budget() 
-//
+
 
 //budget_judge
 test('Creates budget from given Userinput', () => {   

@@ -28,37 +28,25 @@
   "tilda": {
     "password": "larsson",
     "budget": {
-      "income": 30,
-      "savings": 9,
-      "rent": 3,
+      "income": 10,
+      "savings": 1,
+      "rent": 1,
       "categories": [
         {
           "name": "others",
-          "amount": 3
+          "amount": 2.4
         },
         {
           "name": "food",
-          "amount": 3
+          "amount": 3.2
         },
         {
           "name": "nationCard",
-          "amount": 3
+          "amount": 1.2
         },
         {
           "name": "snacks",
-          "amount": 3
-        },
-        {
-          "name": "fika",
-          "amount": 3
-        },
-        {
-          "name": "te",
-          "amount": 3
-        },
-        {
-          "name": "kaffe",
-          "amount": 0
+          "amount": 1.2
         }
       ]
     }
@@ -66,25 +54,25 @@
   "matilde": {
     "password": "wiberg",
     "budget": {
-      "income": 45000,
-      "savings": 2000,
-      "rent": 1500,
+      "income": 13500,
+      "savings": 3000,
+      "rent": 5000,
       "categories": [
         {
           "name": "others",
-          "amount": 10000
+          "amount": 1600
         },
         {
           "name": "food",
-          "amount": 20000
+          "amount": 3500
         },
         {
           "name": "nationCard",
-          "amount": 5000
+          "amount": 200
         },
         {
           "name": "snacks",
-          "amount": 3000
+          "amount": 200
         }
       ]
     }
@@ -307,6 +295,136 @@
   },
   "hej": {
     "password": "hejd",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
+  },
+  "novisen": {
+    "password": "nova",
+    "budget": {
+      "income": 10000000,
+      "savings": 1601900000,
+      "rent": 500000,
+      "categories": [
+        {
+          "name": "others",
+          "amount": -398100000
+        },
+        {
+          "name": "food",
+          "amount": -477720000
+        },
+        {
+          "name": "nationCard",
+          "amount": -318480000
+        },
+        {
+          "name": "snacks",
+          "amount": -318480000
+        }
+      ]
+    }
+  },
+  "fisk": {
+    "password": "pinne",
+    "budget": {
+      "income": 15000,
+      "savings": 3000,
+      "rent": 5000,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 3000
+        },
+        {
+          "name": "food",
+          "amount": 3000
+        },
+        {
+          "name": "nationCard",
+          "amount": 500
+        },
+        {
+          "name": "snacks",
+          "amount": 500
+        }
+      ]
+    }
+  },
+  "null": {
+    "password": "null",
+    "budget": {
+      "income": 0,
+      "savings": 0,
+      "rent": 0,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 0
+        },
+        {
+          "name": "food",
+          "amount": 0
+        },
+        {
+          "name": "nationCard",
+          "amount": 0
+        },
+        {
+          "name": "snacks",
+          "amount": 0
+        }
+      ]
+    }
+  },
+  "katt": {
+    "password": "maja",
+    "budget": {
+      "income": 10,
+      "savings": 1,
+      "rent": 1,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 2
+        },
+        {
+          "name": "food",
+          "amount": 2
+        },
+        {
+          "name": "nationCard",
+          "amount": 2
+        },
+        {
+          "name": "snacks",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  "tilla": {
+    "password": "larson",
     "budget": {
       "income": 0,
       "savings": 0,

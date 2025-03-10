@@ -25,7 +25,7 @@ var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
 var FILE_PATH = "users.json";
 //let users: Users = {};
-// Exempel, skriv om som type example eller vad det kallas
+//Standard budget object for a user, initializing all values to 0
 var StandardBudget = {
     income: 0,
     savings: 0,
@@ -65,47 +65,36 @@ function saveData(users) {
 /**
  * Allows the user to login to the program. The user enter their username and password
  *
- *
  * @return {string | void } - If username and password is correct, the username is returned
  *  - If incorrect, the user is prompted to quit or retry
  */
-function login() {
-    while (true) {
-        var users = openData();
-        var username = String(prompt("Username: "));
-        var password = String(prompt("Password: "));
-        if (username in users && users[username].password === password) {
-            console.log("Login successful!");
-            return username;
-        }
+function login(username, password) {
+    var users = openData();
+    if (username in users && users[username].password === password) {
+        console.log("Login successful!");
+        return username;
+    }
+    else {
         console.log("Incorrect username or password");
-        var retry = menu(2);
-        if (retry === "q") {
-            console.log("Quitting...");
-            return;
-        }
+        return;
     }
 }
 /**
  * Creates account and an empty budget for new user.
  * @returns {string} the username of the new user
  */
-function create_account() {
-    var users = openData(); // det gör däremot användarnamnet tror jag
-    console.log("New user: ");
-    while (true) {
-        var newUsername = String(prompt("Username: "));
-        if (newUsername in users) {
-            console.log("Username is already taken");
-        }
-        else {
-            var newPassword = String(prompt("Password: "));
-            var startBudget = 0;
-            users[newUsername] = { password: newPassword, budget: StandardBudget };
-            console.log("Account created successfully!");
-            saveData(users);
-            return newUsername;
-        }
+function create_account(username, password) {
+    var users = openData();
+    console.log("Creating new user...");
+    if (username in users) {
+        console.log("Username is already taken");
+        return;
+    }
+    else {
+        users[username] = { password: password, budget: StandardBudget };
+        console.log("\nAccount created successfully!");
+        saveData(users);
+        return username;
     }
 }
 /**
@@ -119,6 +108,7 @@ function Userinput() {
 }
 /**
  * Creates a budget from users income, rent and saving-goal based on percentages.
+ *
  * @param {Array} user_data - an array with info of the users income, rent and saving-goal
  * @returns {UserBudget} the new generated budget
  */
@@ -172,6 +162,7 @@ function budget_judge(user_data) {
 }
 /**
  * Function to add money from the categories created from the remaining budget
+ *
  * @param {number} remaining_budget - The remaining amount of income to be used for th
  * @param {string} category - The category that money will be added to.
  * @returns {number} amount - The amount to be added to the category
@@ -330,7 +321,13 @@ function user_actions(username) {
     }
 }
 /**
- * Main function, controlls the program
+ * Main function controlling flow of the program
+ * Initial menu and handles user choice from following:
+ * - "q":Exits the program.
+ * - "l": Allows user to log in and proceeds to the user actions menu
+ * - "c": Allows user to create a new account. If successful, proceeds to the user actions menu.
+ *
+ * @returns {void} - does not return any value
  */
 function main() {
     splash();
@@ -340,22 +337,35 @@ function main() {
         return;
     }
     if (choice === "l") {
-        var username = login();
-        if (username) {
-            var users = openData();
-            //let user_data = Userinput()
-            user_actions(username); // Om inloggningen lyckas, skicka användaren till user_actions()
+        var logged_in_user = "";
+        while (true) {
+            var username = String(prompt("Username: "));
+            var password = String(prompt("Password: "));
+            logged_in_user = login(username, password);
+            if (username === logged_in_user) {
+                break; // Om inloggningen lyckas, skicka användaren till user_actions()
+            }
+            else {
+                var retry = menu(2);
+                if (retry === "q") {
+                    return main();
+                }
+            }
         }
-        else {
-            main(); // börjar om om man quittar sin inloggning istället för att fortsätta loopa/stänga ner helt
-        }
+        user_actions(logged_in_user);
     }
     if (choice === "c") {
-        var username = create_account();
-        if (username) { // om vi ska gå vidare eller ej, if true
-            //let user_data = Userinput()
-            user_actions(username); // hur blir det med tomma strängen i user_actions sen? Uppdatering: ändrade till username
+        console.log("New user:\n");
+        var created_user = "";
+        while (true) {
+            var username = String(prompt("Username: "));
+            var password = String(prompt("Password: "));
+            created_user = create_account(username, password);
+            if (created_user) { // om vi ska gå vidare eller ej, if true
+                break;
+            }
         }
+        user_actions(created_user);
     }
 }
 main();
