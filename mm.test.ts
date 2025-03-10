@@ -7,6 +7,8 @@ test('When account already exists', () => {
     expect(result).toBe("newUser");
 })
 
+
+
 //login() - ensure correct validation of username and password
 test('Login with correct username and password', () => {   
   const exampleUser = { username: "testUser", password: "testPassword" };  

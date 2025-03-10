@@ -24,7 +24,12 @@ var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
 var FILE_PATH = "users.json";
+//type Users = {
+//    username : User
+//}
+//type Users
 //let users: Users = {};
+//Standard budget object for a user, initializing all values to 0
 //Standard budget object for a user, initializing all values to 0
 var StandardBudget = {
     income: 0,
@@ -109,6 +114,7 @@ function Userinput() {
 /**
  * Creates a budget from users income, rent and saving-goal based on percentages.
  *
+ *
  * @param {Array} user_data - an array with info of the users income, rent and saving-goal
  * @returns {UserBudget} the new generated budget
  */
@@ -162,6 +168,7 @@ function budget_judge(user_data) {
 }
 /**
  * Function to add money from the categories created from the remaining budget
+ *
  *
  * @param {number} remaining_budget - The remaining amount of income to be used for th
  * @param {string} category - The category that money will be added to.
@@ -321,6 +328,13 @@ function user_actions(username) {
     }
 }
 /**
+ * Main function controlling flow of the program
+ * Initial menu and handles user choice from following:
+ * - "q":Exits the program.
+ * - "l": Allows user to log in and proceeds to the user actions menu
+ * - "c": Allows user to create a new account. If successful, proceeds to the user actions menu.
+ *
+ * @returns {void} - does not return any value
  * Main function controlling flow of the program
  * Initial menu and handles user choice from following:
  * - "q":Exits the program.

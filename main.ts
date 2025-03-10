@@ -3,6 +3,7 @@
 //Chart.register(ArcElement, Tooltip, Legend);
 // Types
 
+// test så tilda kan kompilera
 
 // kvar att göra
 // 1) Fixa så att man inte behöver skriva in inkomst, hyra osv om man gjort det en gång redan
@@ -52,6 +53,7 @@ type BudgetCategory = {
     amount: number;
 };
 
+// User-types
 export type UserBudget = {
     income: number;
     savings: number;
@@ -59,10 +61,13 @@ export type UserBudget = {
     categories: BudgetCategory[];
 };
 
-// User-types
 type User = {
     password: string;
     budget: UserBudget;
+};
+
+type Users = {
+    [key: string]: User;
 };
 
 //type Users = {
@@ -71,9 +76,6 @@ type User = {
 
 //type Users
 
-type Users = {
-    [key: string]: User;
-};
 
 //let users: Users = {};
 

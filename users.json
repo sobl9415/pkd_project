@@ -448,5 +448,31 @@
         }
       ]
     }
+  },
+  "test": {
+    "password": "testson",
+    "budget": {
+      "income": 13500,
+      "savings": 3000,
+      "rent": 5000,
+      "categories": [
+        {
+          "name": "others",
+          "amount": 1650
+        },
+        {
+          "name": "food",
+          "amount": 2200
+        },
+        {
+          "name": "nationCard",
+          "amount": 825
+        },
+        {
+          "name": "snacks",
+          "amount": 825
+        }
+      ]
+    }
   }
 }
