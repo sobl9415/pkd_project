@@ -2,25 +2,25 @@
   "sofia": {
     "password": "blomstrand",
     "budget": {
-      "income": 30000,
-      "savings": 100,
+      "income": 100000,
+      "savings": 95000,
       "rent": 1000,
       "categories": [
         {
           "name": "others",
-          "amount": 4335
+          "amount": 1000
         },
         {
           "name": "food",
-          "amount": 17340
+          "amount": 1000
         },
         {
           "name": "nationCard",
-          "amount": 5780
+          "amount": 1000
         },
         {
           "name": "snacks",
-          "amount": 5780
+          "amount": 1000
         }
       ]
     }
@@ -80,25 +80,25 @@
   "kalle": {
     "password": "kolakaka",
     "budget": {
-      "income": 10000,
-      "savings": 2000,
-      "rent": 3000,
+      "income": 100000,
+      "savings": 30004,
+      "rent": 10,
       "categories": [
         {
           "name": "others",
-          "amount": 1500
+          "amount": 24495.1
         },
         {
           "name": "food",
-          "amount": 2000
+          "amount": 24495.1
         },
         {
           "name": "nationCard",
-          "amount": 750
+          "amount": 17496.5
         },
         {
           "name": "snacks",
-          "amount": 750
+          "amount": 17496.5
         }
       ]
     }

@@ -1,32 +1,40 @@
 //Test cases 
-import { create_account, budget_judge, add_to_budget, make_budget, view_budget, login } from './main.ts'
+import { create_account, budget_judge, add_to_budget, make_budget, view_budget, login, UserBudget } from './main.ts'
 
 //create_account() - tests ensuring function handles successful account creation
-test('When account already exists', () => {   
-    const result = create_account();
-    expect(result).toBe("newUser");
+test('Create a new account', () => {
+    const example_user = {username: "test_user", password: "test_password"} 
+    const result = create_account(example_user.username, example_user.password);
+    expect(result).toBe(example_user.username);
 })
 
+test('Try to create an account with a taken password', () => {
+    const example_user = {username: "sofia", password: "blomstrand"}
+    const result = create_account(example_user.username, example_user.password);
+    expect(result).toBe(undefined);
+})
 
 
 //login() - ensure correct validation of username and password
 test('Login with correct username and password', () => {   
-  const exampleUser = { username: "testUser", password: "testPassword" };  
-  const result = login(exampleUser.username, exampleUser.password);  // Assuming the login function accepts username and password as arguments
+  const example_user = { username: "test_user", password: "testPassword" };  
+  const result = login(example_user.username, example_user.password);  // Assuming the login function accepts username and password as arguments
   expect(result).toBe("testUser");
 });
 
 test('Login with incorrect username or password', () => {
-  const result = login("wrongUser", "wrongPassword");
-  expect(result).toBe(undefined);  // Assuming login returns undefined on failure
+  const example_user = { username: "test_user", password: "wrongpassword" }  
+  const result = login(example_user.username, example_user.password);
+  expect(result).toBe(undefined); 
 });
 
 
 //add_to_budget()
 
-//make_budget
+//test('', () => {
+//  
+//});
 
-//view_budget() 
 
 
 //budget_judge
@@ -60,7 +68,7 @@ test('Creates budget from given user input, with income greater than 20000', () 
   });
 });
 
-test('Very high income over 40000', () => {   
+test('Very high income over 50000', () => {   
   const result = budget_judge([1000000, 500, 1000]);
   expect(result).toBe({
       income: 1000000,
