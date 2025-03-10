@@ -24,8 +24,12 @@ var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
 var FILE_PATH = "users.json";
+//type Users = {
+//    username : User
+//}
+//type Users
 //let users: Users = {};
-// Exempel, skriv om som type example eller vad det kallas
+//Standard budget object for a user, initializing all values to 0
 var StandardBudget = {
     income: 0,
     savings: 0,
@@ -65,7 +69,6 @@ function saveData(users) {
 /**
  * Allows the user to login to the program. The user enter their username and password
  *
- *
  * @return {string | void } - If username and password is correct, the username is returned
  *  - If incorrect, the user is prompted to quit or retry
  */
@@ -100,7 +103,6 @@ function create_account() {
         }
         else {
             var newPassword = String(prompt("Password: "));
-            var startBudget = 0;
             users[newUsername] = { password: newPassword, budget: StandardBudget };
             console.log("Account created successfully!");
             saveData(users);
@@ -119,6 +121,7 @@ function Userinput() {
 }
 /**
  * Creates a budget from users income, rent and saving-goal based on percentages.
+ *
  * @param {Array} user_data - an array with info of the users income, rent and saving-goal
  * @returns {UserBudget} the new generated budget
  */
@@ -172,6 +175,7 @@ function budget_judge(user_data) {
 }
 /**
  * Function to add money from the categories created from the remaining budget
+ *
  * @param {number} remaining_budget - The remaining amount of income to be used for th
  * @param {string} category - The category that money will be added to.
  * @returns {number} amount - The amount to be added to the category
@@ -330,7 +334,13 @@ function user_actions(username) {
     }
 }
 /**
- * Main function, controlls the program
+ * Main function controlling flow of the program
+ * Initial menu and handles user choice from following:
+ * - "q":Exits the program.
+ * - "l": Allows user to log in and proceeds to the user actions menu
+ * - "c": Allows user to create a new account. If successful, proceeds to the user actions menu.
+ *
+ * @returns {void} - does not return any value
  */
 function main() {
     splash();
