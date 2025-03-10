@@ -11,7 +11,7 @@ var fs = require("fs");
 var PromptSync = require("prompt-sync");
 var pie_example_2__1_1 = require("./pie_example-2 (1)");
 var prompt = PromptSync();
-var FILE_PATH = "users.json";
+var file_path = "users.json";
 //type Users = {
 //    username : User
 //}
@@ -23,10 +23,10 @@ var StandardBudget = {
     savings: 0,
     rent: 0,
     categories: [
-        { name: "others", amount: 0 },
-        { name: "food", amount: 0 },
-        { name: "nationCard", amount: 0 },
-        { name: "snacks", amount: 0 }
+        { name: "Others", amount: 0 },
+        { name: "Food", amount: 0 },
+        { name: "NationCard", amount: 0 },
+        { name: "Snacks", amount: 0 }
     ]
 };
 /**
@@ -45,14 +45,14 @@ function splash() {
  * Opens the JSON file and retreives the created users.
  */
 function openData() {
-    var data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
+    var data = fs.readFileSync(file_path, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
     return JSON.parse(data); // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 /**
  * Function to save user-data in the JSON file
  */
 function saveData(users) {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
+    fs.writeFileSync(file_path, JSON.stringify(users, null, 2), "utf8"); //"JSON.stringify() is used for pretty-printing the JSON with an indentation of 2 spaces"
 }
 /**
  * Allows the user to login to the program. The user enter their username and password.
@@ -143,10 +143,10 @@ function budget_judge(user_data) {
         income: income,
         savings: savings,
         rent: rent,
-        categories: [{ name: "others", amount: others },
-            { name: "food", amount: food },
-            { name: "nationCard", amount: nationCard },
-            { name: "snacks", amount: snacks }]
+        categories: [{ name: "Others", amount: others },
+            { name: "Food", amount: food },
+            { name: "NationCard", amount: nationCard },
+            { name: "Snacks", amount: snacks }]
     };
     console.log(budget);
     return budget;

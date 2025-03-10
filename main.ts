@@ -3,7 +3,7 @@ import * as PromptSync from "prompt-sync";
 import { plotChart } from "./pie_example-2 (1)";
 
 const prompt = PromptSync();
-const FILE_PATH = "users.json";
+const file_path = "users.json";
 
 // Data definitions
 /**
@@ -95,7 +95,7 @@ function splash() {
  * Opens the JSON file and retreives the created users.
  */
 function openData(): Users {
-    const data = fs.readFileSync(FILE_PATH, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
+    const data = fs.readFileSync(file_path, "utf8"); // "utf8" betyder att filen ska läsas som text (inte binärdata)
     return JSON.parse(data) as Users; // JSON.parse(data) omvandlar JSON-strängen till ett objekt
 }
 
@@ -103,7 +103,7 @@ function openData(): Users {
  * Function to save user-data in the JSON file 
  */
 function saveData(users: Users): void {
-    fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2), "utf8");
+    fs.writeFileSync(file_path, JSON.stringify(users, null, 2), "utf8"); //"JSON.stringify() is used for pretty-printing the JSON with an indentation of 2 spaces"
 }
 
 
@@ -197,8 +197,8 @@ export function budget_judge(user_data: Array<number>): UserBudget {
             snacks: 5
         };
     }
-    console.log(remains)
-    console.log(UserPercentage)
+    //console.log(remains)
+    //console.log(UserPercentage)
     const others = (remains * UserPercentage.others) / 100;
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
