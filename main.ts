@@ -57,11 +57,6 @@ type Users = {
 //    username : User
 //}
 
-//type Users
-
-
-//let users: Users = {};
-
 
 //Standard budget object for a user, initializing all values to 0
 const StandardBudget: UserBudget = {
@@ -74,17 +69,6 @@ const StandardBudget: UserBudget = {
     {name: "NationCard", amount: 0},
     {name: "Snacks", amount: 0 }]
 } 
-
-/**
-
-const users: Users = {
-    sofia: { password: "blomstrand" },
-    tilda: { password: "larsson" },
-    matilde: { password: "wiberg" }
-};
- */
-
-
 
 // Functions
 function splash() {
@@ -409,7 +393,7 @@ function main() {
             const password: string = String(prompt("Password: "));
             logged_in_user = login(username, password)
             if (username === logged_in_user) {
-                break // Om inloggningen lyckas, skicka användaren till user_actions()
+                break // If th log-in succedes, send the user to user_actions()
             } else {
                 const retry = menu(2)
                 if (retry === "q") {

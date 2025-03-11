@@ -2,29 +2,25 @@
   "sofia": {
     "password": "blomstrand",
     "budget": {
-      "income": 13000,
-      "savings": 7986,
-      "rent": 5000,
+      "income": 0,
+      "savings": 1000,
+      "rent": 1000,
       "categories": [
         {
           "name": "Others",
-          "amount": 2
+          "amount": -600
         },
         {
           "name": "Food",
-          "amount": 2
+          "amount": -800
         },
         {
           "name": "NationCard",
-          "amount": 2
+          "amount": -300
         },
         {
           "name": "Snacks",
-          "amount": 2
-        },
-        {
-          "name": "",
-          "amount": 6
+          "amount": -100
         }
       ]
     }
