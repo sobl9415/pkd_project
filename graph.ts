@@ -1,1 +1,0 @@
-// här fixar vi graph
