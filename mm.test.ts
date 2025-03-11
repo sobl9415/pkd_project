@@ -29,7 +29,7 @@ test('Login with incorrect username or password', () => {
 });
 
 //budget_judge
-test('Creates budget from given Userinput', () => {   
+test('Creates budget from given Userinput, lower than 20000', () => {   
     const result = budget_judge([10000, 2000, 3000]); 
     expect(result).toEqual({
         income: 10000,

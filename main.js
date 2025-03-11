@@ -133,8 +133,8 @@ function budget_judge(user_data) {
             snacks: 5
         };
     }
-    console.log(remains);
-    console.log(UserPercentage);
+    //console.log(remains)
+    //console.log(UserPercentage)
     var others = (remains * UserPercentage.others) / 100;
     var food = (remains * UserPercentage.food) / 100;
     var nationCard = (remains * UserPercentage.nationCard) / 100;
