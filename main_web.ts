@@ -122,10 +122,10 @@ const StandardBudget: UserBudget = {
     savings: 0,
     rent: 0,
     categories: [
-    {name: "Others", amount: 0},
     {name: "Food", amount: 0},
-    {name: "NationCard", amount: 0},
-    {name: "Snacks", amount: 0 }]
+    {name: "Nation-spending", amount: 0},
+    {name: "Snacks", amount: 0},
+    {name: "Others", amount: 0}]
 } 
 
 /**
@@ -243,8 +243,6 @@ function budget_judge(user_data: Array<number>): UserBudget {
             snacks: 5
         };
     }
-    console.log(remains)
-    console.log(UserPercentage)
     const others = (remains * UserPercentage.others) / 100;
     const food = (remains * UserPercentage.food) / 100;
     const nationCard = (remains * UserPercentage.nationCard) / 100;
@@ -274,8 +272,8 @@ function add_to_budget(remaining_budget: number, category: string): number {
     console.log("Your remaining budget amount (after rent and savings): ", remaining_budget)
     let amount: number = Number(prompt(`Remainging budget: ${remaining_budget}\nAmount to ${category}: `))
     while (amount > remaining_budget) {
-        console.log("That is not reasonable, try again")
-        amount = Number(prompt(`Amount to ${category}: `))
+        //console.log("That is not reasonable, try again")
+        amount = Number(prompt(`That is not reasonable, try again. \nAmount to ${category}: `))
     }
     return amount;
 }
@@ -352,13 +350,13 @@ function displayUserBudget(result: UserBudget) {
 function menu(x: number): string {
     let output = ""
     if (x === 1) {
-        output = ("\nl) Login \nc) Create account \nq) Quit")
+        output = ("l) Login \nc) Create account \nq) Quit")
     }
     if (x === 2) {
-        output = ("\nr) Retry \nq) Quit")
+        output = ("r) Retry \nq) Quit")
     }
     if (x === 3) {
-        output = ("\ng) Generate budget \nc) Create your own budget \nv) View earlier budget \nl) Log out")
+        output = ("g) Generate budget \nc) Create your own budget \nv) View earlier budget \nl) Log out")
     }
     const choice: string = String(prompt(`${output}\nChoose your option: `)).trim().toLowerCase();
     return choice
@@ -397,11 +395,11 @@ function user_actions(username: string): void {
         let users: Users = openData()
         const user_data = Userinput()
         let budget = budget_judge(user_data)
-        const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
-        if (is_budget === "y") {
-            let categories: Array<string> = users[username].budget.categories.map(category => category.name);
-            budget = make_budget(user_data, categories);
-        }
+        // const is_budget: string = String(prompt("Do you want to modify anything? (y/n): ")).trim().toLowerCase();
+        //if (is_budget === "y") {
+        //    let categories: Array<string> = users[username].budget.categories.map(category => category.name);
+        //    budget = make_budget(user_data, categories);
+        //}
         users[username].budget = budget; // Uppdatera användarens budget
         saveData(users);    
         createChart(budget)
@@ -414,13 +412,13 @@ function user_actions(username: string): void {
         let budget = make_budget(user_data, categories)
         createChart(budget)
         console.log(budget)
-        const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
-        if (is_budget === "y") {
-            users[username].budget = budget;
-            categories = users[username].budget.categories.map(category => category.name);
-            console.log(categories)
-            budget = make_budget(user_data, categories); //displayUserBudget(budget)
-        }
+        //const is_budget: string = String(prompt("This is your budget. Do you want to modify it? (y/n): ")).trim().toLowerCase();
+        //if (is_budget === "y") {
+        //    users[username].budget = budget;
+        //    categories = users[username].budget.categories.map(category => category.name);
+        //    console.log(categories)
+        //    budget = make_budget(user_data, categories); //displayUserBudget(budget)
+        //}
         users[username].budget = budget; // när man lägger till kategorier fuckar det lite med att spara ner budgeten, får kolla på det
         saveData(users)
         createChart(budget)
