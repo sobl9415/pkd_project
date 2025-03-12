@@ -2,25 +2,25 @@
   "sofia": {
     "password": "blomstrand",
     "budget": {
-      "income": 0,
-      "savings": 1000,
+      "income": 10000,
+      "savings": 5500,
       "rent": 1000,
       "categories": [
         {
           "name": "Others",
-          "amount": -600
+          "amount": 1000
         },
         {
           "name": "Food",
-          "amount": -800
+          "amount": 1000
         },
         {
           "name": "NationCard",
-          "amount": -300
+          "amount": 1000
         },
         {
           "name": "Snacks",
-          "amount": -100
+          "amount": 500
         }
       ]
     }
@@ -105,32 +105,6 @@
   },
   "test_user2": {
     "password": "correct_password",
-    "budget": {
-      "income": 0,
-      "savings": 0,
-      "rent": 0,
-      "categories": [
-        {
-          "name": "Others",
-          "amount": 0
-        },
-        {
-          "name": "Food",
-          "amount": 0
-        },
-        {
-          "name": "NationCard",
-          "amount": 0
-        },
-        {
-          "name": "Snacks",
-          "amount": 0
-        }
-      ]
-    }
-  },
-  "test_user": {
-    "password": "test_password",
     "budget": {
       "income": 0,
       "savings": 0,

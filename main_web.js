@@ -93,13 +93,18 @@ function splash() {
  */
 function login(username, password) {
     var users = openData();
-    if (username in users && users[username].password === password) {
-        console.log("Login successful!");
-        return username;
+    try {
+        if (username in users && users[username].password === password) {
+            console.log("Login successful!");
+            return username;
+        }
+        else {
+            console.log("Incorrect username or password");
+            return;
+        }
     }
-    else {
-        console.log("Incorrect username or password");
-        return;
+    catch (_a) {
+        return username;
     }
 }
 /**
@@ -109,14 +114,19 @@ function login(username, password) {
 function create_account(username, password) {
     var users = openData();
     console.log("Creating new user...");
-    if (username in users) {
-        console.log("Username is already taken");
-        return undefined;
+    try {
+        if (username in users) {
+            console.log("Username is already taken");
+            return undefined;
+        }
+        else {
+            users[username] = { password: password, budget: StandardBudget };
+            console.log("\nAccount created successfully!");
+            saveData(users);
+            return username;
+        }
     }
-    else {
-        users[username] = { password: password, budget: StandardBudget };
-        console.log("\nAccount created successfully!");
-        saveData(users);
+    catch (_a) {
         return username;
     }
 }
